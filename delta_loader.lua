@@ -11,7 +11,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 -- Создание основного ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "DeltaModernGUI"
+screenGui.Name = "Monster6715ModernGUI"
 screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
@@ -58,7 +58,7 @@ logo.Position = UDim2.new(0.5, 0, 0.35, 0)
 logo.AnchorPoint = Vector2.new(0.5, 0.5)
 logo.Size = UDim2.new(0, 200, 0, 60)
 logo.Font = Enum.Font.GothamBold
-logo.Text = "DELTA"
+logo.Text = "MONSTER6715"
 logo.TextColor3 = Color3.fromRGB(0, 162, 255)
 logo.TextSize = 48
 logo.TextTransparency = 1
@@ -219,7 +219,7 @@ titleText.BackgroundTransparency = 1
 titleText.Position = UDim2.new(0, 15, 0, 0)
 titleText.Size = UDim2.new(1, -60, 1, 0)
 titleText.Font = Enum.Font.GothamBold
-titleText.Text = "Delta Menu"
+titleText.Text = "Monster6715 Menu"
 titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
 titleText.TextSize = 18
 titleText.TextXAlignment = Enum.TextXAlignment.Left
@@ -340,37 +340,39 @@ placeholderText.TextYAlignment = Enum.TextYAlignment.Top
 placeholderText.ZIndex = contentFrame.ZIndex + 1
 
 -- Завершение загрузки и показ меню
-wait(4) -- Ждем завершения загрузки
+wait(4.2) -- Ждем завершения загрузки
 
--- Скрытие экрана загрузки
-local hideLoadingTween = TweenService:Create(loadingFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad), {
-    BackgroundTransparency = 1
-})
-hideLoadingTween:Play()
-
--- Скрытие всех элементов загрузки
-local elementsToHide = {logo, progressBarBg, loadingText}
-for _, element in ipairs(elementsToHide) do
-    local hideTween = TweenService:Create(element, TweenInfo.new(0.5), {
-        TextTransparency = 1,
-        BackgroundTransparency = 1
-    })
-    hideTween:Play()
-end
-
-hideLoadingTween.Completed:Connect(function()
-    loadingFrame:Destroy()
+-- Скрытие экрана загрузки с задержкой для корректного отображения
+local function showMainMenu()
+    loadingFrame.Visible = false
     
     -- Показ основного меню
     mainFrame.Visible = true
     mainFrame.Size = UDim2.new(0, 0, 0, 0)
     mainFrame.BackgroundTransparency = 1
     
-    local showMenuTween = TweenService:Create(mainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back), {
-        Size = isMobile() and UDim2.new(0.95, 0, 0.4, 0) or UDim2.new(0, 400, 0, 300),
+    local targetSize = isMobile() and UDim2.new(0.95, 0, 0.4, 0) or UDim2.new(0, 400, 0, 300)
+    local showMenuTween = TweenService:Create(mainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = targetSize,
         BackgroundTransparency = 0.1
     })
     showMenuTween:Play()
-end)
+end
 
-print("Delta Modern GUI загружен успешно!")
+-- Анимация скрытия загрузки
+local hideLoadingTween = TweenService:Create(loadingFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {
+    BackgroundTransparency = 1
+})
+
+-- Скрытие элементов загрузки
+for _, element in ipairs({logo, progressBarBg, loadingText}) do
+    TweenService:Create(element, TweenInfo.new(0.4), {
+        TextTransparency = 1,
+        BackgroundTransparency = 1
+    }):Play()
+end
+
+hideLoadingTween:Play()
+hideLoadingTween.Completed:Connect(showMainMenu)
+
+print("Monster6715 Modern GUI загружен успешно!")
