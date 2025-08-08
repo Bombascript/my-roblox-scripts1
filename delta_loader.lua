@@ -1,107 +1,100 @@
--- DELTA LOADER v2 (Modern UI)
+-- DELTA LOADER v4 (Modern UI)
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
--- Config
-local LOAD_TIME = 3 -- seconds
-local MENU_SIZE = UDim2.new(0, 350, 0, 450)
-local ACCENT_COLOR = Color3.fromRGB(0, 168, 255) -- Delta blue
+-- CONFIG --
+local LOAD_TIME = 2.5
+local ACCENT_COLOR = Color3.fromRGB(0, 255, 187) -- Неоново-голубой
+local MENU_SIZE = UDim2.new(0, 400, 0, 500) -- Увеличенный размер
 
--- Main GUI
+-- MAIN GUI --
 local gui = Instance.new("ScreenGui")
-gui.Name = "DeltaLoader"
+gui.Name = "MonsterLoader"
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Loading Screen
+-- LOADING SCREEN --
 local loadFrame = Instance.new("Frame")
 loadFrame.Size = UDim2.new(1, 0, 1, 0)
-loadFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+loadFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 loadFrame.Parent = gui
 
--- Animated Circle
-local circle = Instance.new("ImageLabel")
-circle.Name = "LoaderCircle"
-circle.Image = "rbxassetid://3570695787"
-circle.Size = UDim2.new(0, 80, 0, 80)
-circle.Position = UDim2.new(0.5, -40, 0.5, -40)
-circle.BackgroundTransparency = 1
-circle.ImageColor3 = ACCENT_COLOR
-circle.Parent = loadFrame
+-- ANIMATED LOGO --
+local logo = Instance.new("ImageLabel")
+logo.Name = "Logo"
+logo.Image = "rbxassetid://14282392178" -- Замените на свой ID изображения
+logo.Size = UDim2.new(0, 150, 0, 150)
+logo.Position = UDim2.new(0.5, -75, 0.4, -75)
+logo.BackgroundTransparency = 1
+logo.Parent = loadFrame
 
--- Loading Text
+-- LOADING TEXT --
 local loadText = Instance.new("TextLabel")
-loadText.Text = "DELTA // LOADING"
-loadText.Font = Enum.Font.Code
-loadText.TextSize = 18
+loadText.Text = "Loading..."
+loadText.Font = Enum.Font.GothamBold
+loadText.TextSize = 24
 loadText.TextColor3 = Color3.fromRGB(200, 200, 200)
 loadText.Size = UDim2.new(1, 0, 0, 30)
-loadText.Position = UDim2.new(0, 0, 0.55, 0)
+loadText.Position = UDim2.new(0, 0, 0.6, 0)
 loadText.BackgroundTransparency = 1
 loadText.Parent = loadFrame
 
--- Progress Bar
-local progressBar = Instance.new("Frame")
-progressBar.Size = UDim2.new(0.4, 0, 0, 4)
-progressBar.Position = UDim2.new(0.3, 0, 0.6, 0)
-progressBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-progressBar.BorderSizePixel = 0
-progressBar.Parent = loadFrame
+-- CREDIT TEXT --
+local credit = Instance.new("TextLabel")
+credit.Text = "Script By: monster6715"
+credit.Font = Enum.Font.Gotham
+credit.TextSize = 18
+credit.TextColor3 = Color3.fromRGB(150, 150, 150)
+credit.Size = UDim2.new(1, 0, 0, 20)
+credit.Position = UDim2.new(0, 0, 0.9, 0)
+credit.BackgroundTransparency = 1
+credit.Parent = loadFrame
 
-local progressFill = Instance.new("Frame")
-progressFill.Size = UDim2.new(0, 0, 1, 0)
-progressFill.BackgroundColor3 = ACCENT_COLOR
-progressFill.BorderSizePixel = 0
-progressFill.Parent = progressBar
-
--- Rotation Animation
+-- LOADING ANIMATION --
 local spinConnection
-spinConnection = game:GetService("RunService").RenderStepped:Connect(function(dt)
-    circle.Rotation = circle.Rotation + (dt * 200)
+spinConnection = RunService.RenderStepped:Connect(function(dt)
+    logo.Rotation = logo.Rotation + (dt * 120)
 end)
 
--- Loading Simulation
-coroutine.wrap(function()
-    for i = 1, 100 do
-        progressFill.Size = UDim2.new(i/100, 0, 1, 0)
-        task.wait(LOAD_TIME/100)
-    end
-    
+-- LOADING COMPLETION --
+task.delay(LOAD_TIME, function()
     spinConnection:Disconnect()
     
-    -- Fade Out Animation
-    TweenService:Create(loadFrame, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+    -- Fade out animation
+    TweenService:Create(loadFrame, TweenInfo.new(0.7), {BackgroundTransparency = 1}):Play()
     for _, v in ipairs(loadFrame:GetChildren()) do
         if v:IsA("GuiObject") then
-            TweenService:Create(v, TweenInfo.new(0.5), {Transparency = 1}):Play()
+            TweenService:Create(v, TweenInfo.new(0.7), {Transparency = 1}):Play()
         end
     end
     
-    task.wait(0.5)
+    task.wait(0.7)
     loadFrame:Destroy()
-    
-    -- Create Empty Menu
-    CreateMenu()
-end)()
+    CreateModernMenu()
+end)
 
-function CreateMenu()
+-- MODERN MENU --
+function CreateModernMenu()
     local menuFrame = Instance.new("Frame")
     menuFrame.Size = MENU_SIZE
     menuFrame.Position = UDim2.new(0.5, -MENU_SIZE.X.Offset/2, 0.5, -MENU_SIZE.Y.Offset/2)
     menuFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    menuFrame.BorderColor3 = ACCENT_COLOR
+    menuFrame.BorderSizePixel = 1
     menuFrame.ClipsDescendants = true
     menuFrame.Parent = gui
-    
-    -- Top Bar
+
+    -- TOP BAR --
     local topBar = Instance.new("Frame")
     topBar.Size = UDim2.new(1, 0, 0, 40)
     topBar.BackgroundColor3 = ACCENT_COLOR
     topBar.BorderSizePixel = 0
     topBar.Parent = menuFrame
-    
+
     local title = Instance.new("TextLabel")
-    title.Text = "DELTA MENU"
-    title.Font = Enum.Font.Code
+    title.Text = "MONSTER MENU"
+    title.Font = Enum.Font.GothamBold
     title.TextSize = 20
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.Size = UDim2.new(1, -10, 1, 0)
@@ -109,28 +102,46 @@ function CreateMenu()
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Parent = topBar
-    
-    -- Close Button
+
+    -- CLOSE BUTTON --
     local closeBtn = Instance.new("TextButton")
-    closeBtn.Text = "X"
-    closeBtn.Font = Enum.Font.Code
-    closeBtn.TextSize = 18
+    closeBtn.Text = "×"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 24
     closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    closeBtn.Size = UDim2.new(0, 30, 1, 0)
-    closeBtn.Position = UDim2.new(1, -30, 0, 0)
+    closeBtn.Size = UDim2.new(0, 40, 1, 0)
+    closeBtn.Position = UDim2.new(1, -40, 0, 0)
     closeBtn.BackgroundTransparency = 1
     closeBtn.Parent = topBar
-    
+
     closeBtn.MouseButton1Click:Connect(function()
         gui:Destroy()
     end)
-    
-    -- Make draggable
-    local dragging
-    local dragInput
-    local dragStart
-    local startPos
-    
+
+    -- CONTENT FRAME --
+    local content = Instance.new("ScrollingFrame")
+    content.Size = UDim2.new(1, -20, 1, -60)
+    content.Position = UDim2.new(0, 10, 0, 50)
+    content.BackgroundTransparency = 1
+    content.ScrollBarThickness = 5
+    content.ScrollBarImageColor3 = ACCENT_COLOR
+    content.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    content.Parent = menuFrame
+
+    -- EXAMPLE BUTTON --
+    local btn = Instance.new("TextButton")
+    btn.Text = "Example Feature"
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 16
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Size = UDim2.new(1, 0, 0, 35)
+    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    btn.BorderSizePixel = 0
+    btn.Parent = content
+
+    -- DRAGGABLE --
+    local dragging, dragInput, dragStart, startPos
+
     topBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
@@ -138,14 +149,14 @@ function CreateMenu()
             startPos = menuFrame.Position
         end
     end)
-    
+
     UserInputService.InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             local delta = input.Position - dragStart
             menuFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
-    
+
     topBar.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
