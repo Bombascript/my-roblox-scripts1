@@ -1,6 +1,6 @@
 -- DELTA-STYLE LOADER WITH ANIMATION
 local function CreateLoader()
-    -- Создаём экран загрузки
+    -- Создаём экран загрузк
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "DeltaLoaderUI"
     screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
