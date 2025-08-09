@@ -1,31 +1,55 @@
--- Final stable UI + ESP + AutoCollect (Delta / Synapse)
--- Вставлять целиком в исполнителе (Local script style, клиентский скрипт)
+--[[
+  Надёжный клиентский Lua-скрипт для Delta/Synapse-подобных инструментов
+  - Центрированные окна
+  - Статичная камера пока открыто (Scriptable), восстанавливается при закрытии
+  - Loading -> Key (monster6715) -> Transition -> Menu "Что хотите выбрать"
+  - Кнопки: 99night (ошибка), Steal A brainrot (ошибка), Grow a garden (успех -> вторая загрузка -> пустое меню)
+  - Свернуть в мини-панель и вернуть (мини-панель тоже центрируется и двигается)
+  - ESP для "дорогих" фруктов (billboard), AutoCollect для "дешёвых" (вкл/выкл вручную)
+  - Много pcall/проверок чтобы скрипт не падал
+--]]
 
--- Настройки
+-- ------------------------------
+-- Конфигурация
+-- ------------------------------
 local CORRECT_KEY = "monster6715"
-local MAIN_W, MAIN_H = 560, 380
 
-local EXPENSIVE_FRUITS = {
-    "dragon", "moon", "pineapple", "mango", "traveler", "ember", "hive", "sugar"
-}
-local CHEAP_FRUITS = {
-    "apple", "banana", "straw", "carrot", "orange"
-}
+local MAIN_WIDTH = 560
+local MAIN_HEIGHT = 380
 
--- Сервисы
+-- подстроки имён для распознавания (добавляй варианты по необходимости)
+local EXPENSIVE_FRUITS = { "dragon", "moon", "pineapple", "mango", "traveler", "ember", "hive", "sugar" }
+local CHEAP_FRUITS      = { "apple", "banana", "straw", "carrot", "orange" }
+
+-- ------------------------------
+-- Сервисы и игрок
+-- ------------------------------
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
-local workspace = game:GetService("Workspace")
+local Workspace = game:GetService("Workspace")
 
 local LocalPlayer = Players.LocalPlayer
+if not LocalPlayer then
+    -- иногда LocalPlayer может не появиться мгновенно в некоторых средах
+    LocalPlayer = Players:GetPropertyChangedSignal("LocalPlayer") and Players.LocalPlayer or nil
+    while not LocalPlayer do
+        task.wait(0.1)
+        LocalPlayer = Players.LocalPlayer
+    end
+end
+
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- ========== Камера / Blur ==========
-local Camera = workspace.CurrentCamera
-local origCameraType, origCameraCFrame
+-- ------------------------------
+-- Камера и Blur (фиксированный фон)
+-- ------------------------------
+local Camera = Workspace.CurrentCamera
+local origCameraType, origCameraCFrame = nil, nil
+
+-- Найдём или создадим BlurEffect
 local blur = Lighting:FindFirstChildOfClass("BlurEffect")
 if not blur then
     blur = Instance.new("BlurEffect")
@@ -33,20 +57,28 @@ if not blur then
     blur.Size = 0
 end
 
-local function tweenBlur(target, dur)
-    dur = dur or 0.28
-    local start = blur.Size
-    local steps = 18
-    local step = (target - start) / math.max(1, steps)
-    for i = 1, steps do
-        blur.Size = blur.Size + step
-        task.wait(dur / steps)
+local function safeTweenBlur(target, duration)
+    duration = duration or 0.28
+    local ok, err = pcall(function()
+        local start = blur.Size or 0
+        local steps = 18
+        local step = (target - start) / (steps == 0 and 1 or steps)
+        for i = 1, steps do
+            blur.Size = blur.Size + step
+            task.wait(duration / steps)
+        end
+        blur.Size = target
+    end)
+    if not ok then
+        warn("blur tween failed:", err)
+        -- попытка просто установить
+        pcall(function() blur.Size = target end)
     end
-    blur.Size = target
 end
 
 local function freezeCamera()
     pcall(function()
+        if not Camera then Camera = Workspace.CurrentCamera end
         origCameraType = Camera.CameraType
         origCameraCFrame = Camera.CFrame
         Camera.CameraType = Enum.CameraType.Scriptable
@@ -56,19 +88,28 @@ end
 
 local function restoreCamera()
     pcall(function()
-        if origCameraType then Camera.CameraType = origCameraType end
-        if origCameraCFrame then Camera.CFrame = origCameraCFrame end
+        if Camera and origCameraType then
+            Camera.CameraType = origCameraType
+        end
+        if Camera and origCameraCFrame then
+            Camera.CFrame = origCameraCFrame
+        end
     end)
 end
 
--- ========== Утилиты GUI ==========
+-- ------------------------------
+-- Общие GUI-хелперы
+-- ------------------------------
 local function makeScreenGui(name)
-    local sg = Instance.new("ScreenGui")
-    sg.Name = name
-    sg.ResetOnSpawn = false
-    sg.Parent = PlayerGui
-    sg:SetAttribute("GAG_ByScript", true)
-    return sg
+    local ok, sg = pcall(function()
+        local g = Instance.new("ScreenGui")
+        g.Name = name or "GAG_SG"
+        g.ResetOnSpawn = false
+        g.Parent = PlayerGui
+        g:SetAttribute("GAG_ByScript", true)
+        return g
+    end)
+    if ok then return sg else return nil end
 end
 
 local function centerFrame(parent, w, h)
@@ -78,119 +119,153 @@ local function centerFrame(parent, w, h)
     f.Position = UDim2.new(0.5, 0, 0.5, 0)
     f.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
     f.BorderSizePixel = 0
-    local uc = Instance.new("UICorner", f); uc.CornerRadius = UDim.new(0, 10)
+    local uc = Instance.new("UICorner", f); uc.CornerRadius = UDim.new(0, 12)
     return f
 end
 
-local function makeLabel(parent, y, text, size, bold)
+local function makeLabel(parent, y, text, size, bold, align)
     local lbl = Instance.new("TextLabel", parent)
-    lbl.Size = UDim2.new(1, -24, 0, size or 24)
-    lbl.Position = UDim2.new(0, 12, 0, y)
+    lbl.Size = UDim2.new(1, -28, 0, size or 24)
+    lbl.Position = UDim2.new(0, 14, 0, y)
     lbl.BackgroundTransparency = 1
     lbl.Text = text or ""
-    lbl.Font = bold and Enum.Font.GothamBold or Enum.Font.Gotham
-    lbl.TextSize = (size and (size-4)) or 16
+    lbl.Font = bold and Enum.Font.SourceSansBold or Enum.Font.SourceSans
+    lbl.TextSize = math.max(12, (size and (size-2) or 16))
     lbl.TextColor3 = Color3.fromRGB(240,240,240)
     lbl.TextWrapped = true
-    lbl.TextXAlignment = Enum.TextXAlignment.Center
+    lbl.TextXAlignment = align or Enum.TextXAlignment.Center
     return lbl
 end
 
-local function makeButton(parent, y, text, wPercent)
+local function makeButton(parent, y, text, widthPercent)
     local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(wPercent or 0.9, 0, 0, 36)
+    btn.Size = UDim2.new(widthPercent or 0.9, 0, 0, 38)
     btn.Position = UDim2.new(0.05, 0, 0, y)
-    btn.BackgroundColor3 = Color3.fromRGB(42,42,42)
+    btn.BackgroundColor3 = Color3.fromRGB(44,44,44)
     btn.BorderSizePixel = 0
-    local uc = Instance.new("UICorner", btn); uc.CornerRadius = UDim.new(0,6)
-    btn.Font = Enum.Font.GothamBold
+    local uc = Instance.new("UICorner", btn); uc.CornerRadius = UDim.new(0,8)
+    btn.Font = Enum.Font.SourceSansBold
     btn.TextSize = 15
-    btn.TextColor3 = Color3.fromRGB(240,240,240)
-    btn.Text = text
+    btn.AutoButtonColor = true
+    btn.TextColor3 = Color3.fromRGB(245,245,245)
+    btn.Text = text or "Button"
     return btn
 end
 
-local function tweenObject(obj, props, time)
-    local info = TweenInfo.new(time or 0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    local tw = TweenService:Create(obj, info, props)
-    tw:Play()
-    return tw
+local function tweenObject(obj, props, time, style, dir)
+    time = time or 0.22
+    style = style or Enum.EasingStyle.Quad
+    dir = dir or Enum.EasingDirection.Out
+    local ok, t = pcall(function()
+        local info = TweenInfo.new(time, style, dir)
+        local tw = TweenService:Create(obj, info, props)
+        tw:Play()
+        return tw
+    end)
+    if not ok then
+        warn("tween failed:", t)
+    end
 end
 
 local function clearOurGui()
-    for _, v in pairs(PlayerGui:GetChildren()) do
+    -- удаляем все SG созданные этим скриптом
+    for _, v in ipairs(PlayerGui:GetChildren()) do
         if v:GetAttribute and v:GetAttribute("GAG_ByScript") then
-            v:Destroy()
+            pcall(function() v:Destroy() end)
         end
     end
     restoreCamera()
-    pcall(function() tweenBlur(0, 0.2) end)
+    pcall(function() safeTweenBlur(0, 0.18) end)
 end
 
--- ========== Loading ========== 
+-- центрировать при изменении окна (чтобы на мобилке оставалось по центру)
+local function ensureCenter(frame)
+    if not frame then return end
+    pcall(function()
+        frame.AnchorPoint = Vector2.new(0.5, 0.5)
+        frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    end)
+end
+
+-- ------------------------------
+-- Loading
+-- ------------------------------
 local function showLoading(text, dur)
     dur = dur or 1.6
     local sg = makeScreenGui("GAG_Loading")
+    if not sg then return end
     local frame = centerFrame(sg, 320, 110)
-    local label = makeLabel(frame, 18, text or "Loading...", 22, true)
-    tweenBlur(18, 0.25)
+    frame.ZIndex = 10
+    local lbl = makeLabel(frame, 18, text or "Loading...", 22, true)
+    safeTweenBlur(18, 0.26)
     freezeCamera()
     task.wait(dur)
-    if sg and sg.Parent then sg:Destroy() end
+    pcall(function() sg:Destroy() end)
 end
 
--- ========== ESP & AutoCollect ==========
+-- ------------------------------
+-- ESP & AutoCollect (функции, фоновые петли)
+-- ------------------------------
 local espActive = false
 local autoActive = false
-local espMap = {} -- part -> billboard
+local espMap = {}  -- part -> BillboardGui
 
-local function nameMatchesAny(name, tbl)
-    local ln = (name or ""):lower()
-    for _, pat in ipairs(tbl) do
-        if string.find(ln, pat:lower()) then
+local function nameMatchesAny(name, patterns)
+    if not name then return false end
+    local ln = name:lower()
+    for _, p in ipairs(patterns) do
+        local pat = p:lower()
+        if string.find(ln, pat) or string.find(ln, pat:gsub("%s","")) then
             return true
         end
     end
     return false
 end
 
-local function createBillboard(part, color, labelText)
+local function createBillboard(part, col, labelText)
     if not part or not part:IsA("BasePart") then return end
     if espMap[part] then return end
-    local bg = Instance.new("BillboardGui")
-    bg.Adornee = part
-    bg.Size = UDim2.new(0,140,0,36)
-    bg.AlwaysOnTop = true
-    bg.StudsOffset = Vector3.new(0, 1.5, 0)
-    bg.Parent = PlayerGui
+    local ok, bg = pcall(function()
+        local gui = Instance.new("BillboardGui")
+        gui.Adornee = part
+        gui.Size = UDim2.new(0, 150, 0, 36)
+        gui.AlwaysOnTop = true
+        gui.StudsOffset = Vector3.new(0, 1.6, 0)
+        gui.Parent = PlayerGui
 
-    local txt = Instance.new("TextLabel", bg)
-    txt.Size = UDim2.new(1,0,1,0)
-    txt.BackgroundTransparency = 1
-    txt.Font = Enum.Font.GothamBold
-    txt.TextSize = 14
-    txt.Text = labelText or part.Name
-    txt.TextColor3 = color
-
-    espMap[part] = bg
+        local txt = Instance.new("TextLabel", gui)
+        txt.Size = UDim2.new(1,0,1,0)
+        txt.BackgroundTransparency = 1
+        txt.Font = Enum.Font.SourceSansBold
+        txt.TextSize = 13
+        txt.Text = labelText or part.Name
+        txt.TextColor3 = col or Color3.fromRGB(255,200,60)
+        return gui
+    end)
+    if ok and bg then
+        espMap[part] = bg
+    end
 end
 
 local function clearEsp()
-    for p, gui in pairs(espMap) do
-        if gui and gui.Parent then gui:Destroy() end
+    for p, g in pairs(espMap) do
+        pcall(function()
+            if g and g.Parent then g:Destroy() end
+        end)
     end
     espMap = {}
 end
 
-local function scanEsp()
-    if not espActive then 
+local function scanAndMarkEsp()
+    if not espActive then
         clearEsp()
-        return 
+        return
     end
-    for _, obj in ipairs(workspace:GetDescendants()) do
+    -- ищем объекты в workspace
+    for _, obj in ipairs(Workspace:GetDescendants()) do
         if (obj:IsA("BasePart") or obj:IsA("MeshPart")) and obj.Parent then
             if nameMatchesAny(obj.Name, EXPENSIVE_FRUITS) then
-                pcall(createBillboard, obj, Color3.fromRGB(255,200,60), "Дорогой: "..obj.Name)
+                pcall(createBillboard, obj, Color3.fromRGB(255,200,60), "Дорогой: "..tostring(obj.Name))
             end
         end
     end
@@ -198,7 +273,7 @@ end
 
 local function tryCollect(part)
     if not part or not part.Parent then return false end
-    -- ProximityPrompt first
+    -- пробуем ProximityPrompt
     for _, d in ipairs(part:GetDescendants()) do
         if d:IsA("ProximityPrompt") then
             pcall(function()
@@ -209,8 +284,8 @@ local function tryCollect(part)
             return true
         end
     end
-    -- firetouchinterest fallback (if available)
-    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    -- firetouchinterest fallback
+    local hrp = (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart"))
     if hrp then
         if typeof(firetouchinterest) == "function" then
             pcall(function()
@@ -219,12 +294,12 @@ local function tryCollect(part)
             end)
             return true
         else
-            -- safe short teleport fallback
+            -- короткое телепортирование (если возможно)
             local ok, prev = pcall(function() return hrp.CFrame end)
             if ok and prev then
                 pcall(function()
                     hrp.CFrame = part.CFrame + Vector3.new(0, 3, 0)
-                    task.wait(0.09)
+                    task.wait(0.08)
                     hrp.CFrame = prev
                 end)
                 return true
@@ -234,9 +309,9 @@ local function tryCollect(part)
     return false
 end
 
-local function scanCollect()
+local function scanAndCollectCheap()
     if not autoActive then return end
-    for _, obj in ipairs(workspace:GetDescendants()) do
+    for _, obj in ipairs(Workspace:GetDescendants()) do
         if (obj:IsA("BasePart") or obj:IsA("MeshPart")) and obj.Parent then
             if nameMatchesAny(obj.Name, CHEAP_FRUITS) then
                 pcall(tryCollect, obj)
@@ -245,76 +320,93 @@ local function scanCollect()
     end
 end
 
--- background loops (safe)
+-- фоновые петли (не блокируют основной поток)
 spawn(function()
     while true do
-        if espActive then pcall(scanEsp) end
+        pcall(scanAndMarkEsp)
         task.wait(1.1)
     end
 end)
+
 spawn(function()
     while true do
-        if autoActive then pcall(scanCollect) end
+        pcall(scanAndCollectCheap)
         task.wait(0.9)
     end
 end)
 
--- ========== Build Key UI ==========
+-- ------------------------------
+-- UI: Key -> Main Menu -> Empty Menu
+-- ------------------------------
 local function createKeyUI()
+    clearOurGui()
     local sg = makeScreenGui("GAG_KeyUI")
+    if not sg then return end
     local frame = centerFrame(sg, 420, 260)
+    frame.ZIndex = 5
 
-    -- title
-    local title = makeLabel(frame, 10, "Ronix Hub Key System", 22, true)
-    -- info
-    makeLabel(frame, 56, "Введите ключ чтобы продолжить:", 16, false)
+    local title = makeLabel(frame, 12, "Ronix Hub Key System", 22, true)
+    title.TextXAlignment = Enum.TextXAlignment.Center
+
+    makeLabel(frame, 56, "Введите ключ чтобы продолжить:", 14, false)
 
     -- textbox
     local box = Instance.new("TextBox", frame)
     box.Size = UDim2.new(0.9, 0, 0, 36)
-    box.Position = UDim2.new(0.05, 0, 0, 100)
+    box.Position = UDim2.new(0.05, 0, 0, 104)
     box.BackgroundColor3 = Color3.fromRGB(36,36,36)
     box.PlaceholderText = "Введите ключ..."
-    box.Font = Enum.Font.Gotham
+    box.Font = Enum.Font.SourceSans
     box.TextSize = 16
     box.TextColor3 = Color3.fromRGB(240,240,240)
     local ub = Instance.new("UICorner", box); ub.CornerRadius = UDim.new(0,6)
 
-    local enter = makeButton(frame, 152, "Проверить ключ")
-    local feedback = makeLabel(frame, 196, "", 16, false)
+    local enter = makeButton(frame, 156, "Проверить ключ")
+    local feedback = makeLabel(frame, 200, "", 14, false)
+
+    -- центрирование при изменении окна
+    UserInputService.WindowSizeChanged:Connect(function()
+        ensureCenter(frame)
+    end)
 
     enter.MouseButton1Click:Connect(function()
-        if box.Text == CORRECT_KEY then
+        local text = tostring(box.Text or "")
+        if text == CORRECT_KEY then
             feedback.Text = "Ключ верный. Запуск..."
-            feedback.TextColor3 = Color3.fromRGB(150,255,150)
-            tweenObject(frame, {Size = UDim2.new(0, MAIN_W+40, 0, MAIN_H+40)}, 0.22)
-            tweenBlur(20, 0.28)
+            feedback.TextColor3 = Color3.fromRGB(140, 255, 150)
+            -- имбовый переход
+            tweenObject(frame, {Size = UDim2.new(0, MAIN_WIDTH + 40, 0, MAIN_HEIGHT + 40)}, 0.22)
+            safeTweenBlur(20, 0.28)
             freezeCamera()
-            task.wait(0.28)
-            if sg and sg.Parent then sg:Destroy() end
+            task.wait(0.26)
+            pcall(function() sg:Destroy() end)
             showLoading("Применение настроек...", 1.0)
             createMainMenu(false)
         else
             feedback.Text = "Неверный ключ!"
-            feedback.TextColor3 = Color3.fromRGB(255,140,140)
+            feedback.TextColor3 = Color3.fromRGB(255,150,150)
             box.Text = ""
         end
     end)
 end
 
--- ========== Build Main Menu ==========
+-- createMainMenu: isEmpty == true -> пустое меню того же размера
 function createMainMenu(isEmpty)
-    isEmpty = isEmpty or false
+    isEmpty = isEmpty and true or false
+    clearOurGui()
     local sg = makeScreenGui("GAG_MainMenu")
-    local frame = centerFrame(sg, MAIN_W, MAIN_H)
+    if not sg then return end
+    local frame = centerFrame(sg, MAIN_WIDTH, MAIN_HEIGHT)
+    frame.ZIndex = 6
 
-    -- header area (drag + title + controls)
+    -- header
     local header = Instance.new("Frame", frame)
-    header.Size = UDim2.new(1, -40, 0, 48)
-    header.Position = UDim2.new(0, 20, 0, 12)
+    header.Size = UDim2.new(1, -36, 0, 48)
+    header.Position = UDim2.new(0, 18, 0, 12)
     header.BackgroundTransparency = 1
 
-    local title = makeLabel(header, 0, isEmpty and "" or "Что хотите выбрать", 20, true)
+    local titleText = isEmpty and "" or "Что хотите выбрать"
+    local title = makeLabel(header, 0, titleText, 18, true)
     title.Position = UDim2.new(0, 0, 0, 0)
     title.TextXAlignment = Enum.TextXAlignment.Center
 
@@ -322,36 +414,39 @@ function createMainMenu(isEmpty)
     closeBtn.Size = UDim2.new(0, 30, 0, 30)
     closeBtn.Position = UDim2.new(1, -36, 0, 6)
     closeBtn.Text = "X"
-    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.Font = Enum.Font.SourceSansBold
     closeBtn.TextSize = 14
     closeBtn.BackgroundColor3 = Color3.fromRGB(190,55,55)
-    local cc = Instance.new("UICorner", closeBtn); cc.CornerRadius = UDim.new(0,6)
-    closeBtn.MouseButton1Click:Connect(function() clearOurGui() end)
+    local cc = Instance.new("UICorner", closeBtn); cc.CornerRadius = UDim.new(0, 6)
+
+    closeBtn.MouseButton1Click:Connect(function()
+        clearOurGui()
+    end)
 
     local minBtn = Instance.new("TextButton", header)
     minBtn.Size = UDim2.new(0, 30, 0, 30)
     minBtn.Position = UDim2.new(1, -76, 0, 6)
     minBtn.Text = "-"
-    minBtn.Font = Enum.Font.GothamBold
-    minBtn.TextSize = 20
-    minBtn.BackgroundColor3 = Color3.fromRGB(110,110,110)
+    minBtn.Font = Enum.Font.SourceSansBold
+    minBtn.TextSize = 18
+    minBtn.BackgroundColor3 = Color3.fromRGB(105,105,105)
     local mc = Instance.new("UICorner", minBtn); mc.CornerRadius = UDim.new(0,6)
 
-    -- main body
-    local offsetY = 70
+    -- main content
+    local offsetY = 72
     if not isEmpty then
-        -- buttons
-        local b1 = makeButton(frame, offsetY, "99night"); offsetY = offsetY + 48
-        local b2 = makeButton(frame, offsetY, "Steal A brainrot"); offsetY = offsetY + 48
-        local b3 = makeButton(frame, offsetY, "Grow a garden"); offsetY = offsetY + 48
+        local b1 = makeButton(frame, offsetY, "99night"); offsetY = offsetY + 50
+        local b2 = makeButton(frame, offsetY, "Steal A brainrot"); offsetY = offsetY + 50
+        local b3 = makeButton(frame, offsetY, "Grow a garden"); offsetY = offsetY + 50
 
-        local feedback = makeLabel(frame, offsetY, "", 16, false); offsetY = offsetY + 36
+        local feedback = makeLabel(frame, offsetY, "", 14, false); offsetY = offsetY + 36
 
+        -- toggles (по ширине две кнопки)
         local espBtn = makeButton(frame, offsetY, "ESP (дорогие): ВЫКЛ", 0.47)
         espBtn.Position = UDim2.new(0.05, 0, 0, offsetY)
         local acBtn = makeButton(frame, offsetY, "AutoCollect (деш): ВЫКЛ", 0.47)
         acBtn.Position = UDim2.new(0.52, 0, 0, offsetY)
-        offsetY = offsetY + 46
+        offsetY = offsetY + 44
 
         b1.MouseButton1Click:Connect(function()
             feedback.Text = "Ошибка: не готово."
@@ -364,50 +459,53 @@ function createMainMenu(isEmpty)
 
         b3.MouseButton1Click:Connect(function()
             feedback.Text = "Успешно. Запуск Grow a garden..."
-            feedback.TextColor3 = Color3.fromRGB(150,255,150)
+            feedback.TextColor3 = Color3.fromRGB(130, 255, 140)
             tweenObject(frame, {BackgroundTransparency = 0.6}, 0.18)
             task.wait(0.18)
             showLoading("Применение Grow a Garden...", 1.6)
-            if sg and sg.Parent then sg:Destroy() end
-            createMainMenu(true) -- пустое меню того же размера
-            -- теперь пользователь в пустом меню может включать ESP/Auto через переключатели
+            -- после загрузки удаляем меню и создаём пустое (тот же размер)
+            pcall(function() sg:Destroy() end)
+            createMainMenu(true)
+            -- в пустом меню пользователь сможет включить ESP/Auto
         end)
 
         espBtn.MouseButton1Click:Connect(function()
             espActive = not espActive
             espBtn.Text = "ESP (дорогие): " .. (espActive and "ВКЛ" or "ВЫКЛ")
-            espBtn.BackgroundColor3 = espActive and Color3.fromRGB(70,150,70) or Color3.fromRGB(42,42,42)
+            espBtn.BackgroundColor3 = espActive and Color3.fromRGB(70,150,70) or Color3.fromRGB(44,44,44)
             if not espActive then clearEsp() end
         end)
 
         acBtn.MouseButton1Click:Connect(function()
             autoActive = not autoActive
             acBtn.Text = "AutoCollect (деш): " .. (autoActive and "ВКЛ" or "ВЫКЛ")
-            acBtn.BackgroundColor3 = autoActive and Color3.fromRGB(70,150,70) or Color3.fromRGB(42,42,42)
+            acBtn.BackgroundColor3 = autoActive and Color3.fromRGB(70,150,70) or Color3.fromRGB(44,44,44)
         end)
     else
-        -- пустое меню: такие же размеры, переключатели внизу
-        makeLabel(frame, 120, "Меню пусто. Размер и позиция те же.", 16, false)
+        -- пустое меню: те же размеры, переключатели внизу для включения функций
+        makeLabel(frame, 120, "Меню пусто. Размер и позиция такие же.", 14, false)
         local ypos = 170
         local espBtn2 = makeButton(frame, ypos, "ESP (дорогие): ВЫКЛ", 0.47)
         espBtn2.Position = UDim2.new(0.05, 0, 0, ypos)
         local acBtn2 = makeButton(frame, ypos, "AutoCollect (деш): ВЫКЛ", 0.47)
         acBtn2.Position = UDim2.new(0.52, 0, 0, ypos)
+
         espBtn2.MouseButton1Click:Connect(function()
             espActive = not espActive
             espBtn2.Text = "ESP (дорогие): " .. (espActive and "ВКЛ" or "ВЫКЛ")
-            espBtn2.BackgroundColor3 = espActive and Color3.fromRGB(70,150,70) or Color3.fromRGB(42,42,42)
+            espBtn2.BackgroundColor3 = espActive and Color3.fromRGB(70,150,70) or Color3.fromRGB(44,44,44)
             if not espActive then clearEsp() end
         end)
+
         acBtn2.MouseButton1Click:Connect(function()
             autoActive = not autoActive
             acBtn2.Text = "AutoCollect (деш): " .. (autoActive and "ВКЛ" or "ВЫКЛ")
-            acBtn2.BackgroundColor3 = autoActive and Color3.fromRGB(70,150,70) or Color3.fromRGB(42,42,42)
+            acBtn2.BackgroundColor3 = autoActive and Color3.fromRGB(70,150,70) or Color3.fromRGB(44,44,44)
         end)
     end
 
-    -- Dragging header (works on mobile & PC)
-    local dragging, dragStart, startPos
+    -- Dragging header (pc + mobile)
+    local dragging, dragStart, startPos = false, nil, nil
     header.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
@@ -423,24 +521,28 @@ function createMainMenu(isEmpty)
         end
     end)
 
-    -- Minimize behavior: center mini panel
+    -- Minimize -> mini panel (центрированная)
     local miniGui
     minBtn.MouseButton1Click:Connect(function()
         sg.Enabled = false
         miniGui = makeScreenGui("GAG_Mini")
+        if not miniGui then return end
+
         local mini = Instance.new("Frame", miniGui)
         mini.Size = UDim2.new(0, 90, 0, 90)
         mini.AnchorPoint = Vector2.new(0.5, 0.5)
         mini.Position = UDim2.new(0.5, 0.5, 0, 0)
         mini.BackgroundColor3 = Color3.fromRGB(28,28,28)
-        local ucm = Instance.new("UICorner", mini); ucm.CornerRadius = UDim.new(0,18)
+        local ucm = Instance.new("UICorner", mini); ucm.CornerRadius = UDim.new(0, 18)
+
         local plus = Instance.new("TextButton", mini)
-        plus.Size = UDim2.new(0.75,0,0.75,0); plus.Position = UDim2.new(0.125,0,0.125,0)
-        plus.Text = "+"; plus.Font = Enum.Font.GothamBold; plus.TextSize = 30
+        plus.Size = UDim2.new(0.75, 0, 0.75, 0)
+        plus.Position = UDim2.new(0.125, 0, 0.125, 0)
+        plus.Text = "+"; plus.Font = Enum.Font.SourceSansBold; plus.TextSize = 30
         plus.BackgroundTransparency = 1; plus.TextColor3 = Color3.fromRGB(240,240,240)
 
-        -- dragging mini
-        local md, ms, msp
+        -- drag mini
+        local md, ms, msp = false, nil, nil
         plus.InputBegan:Connect(function(i)
             if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
                 md = true
@@ -457,15 +559,23 @@ function createMainMenu(isEmpty)
         end)
 
         plus.MouseButton1Click:Connect(function()
-            if miniGui and miniGui.Parent then miniGui:Destroy() end
+            pcall(function() if miniGui and miniGui.Parent then miniGui:Destroy() end end)
             sg.Enabled = true
         end)
     end)
 end
 
--- ========== Sequence start ==========
+-- ------------------------------
+-- Start sequence
+-- ------------------------------
 clearOurGui()
 showLoading("Loading...", 1.6)
 createKeyUI()
 
--- Скрипт завершён. Если будут ошибки в эксплойтере, пришли текст ошибки или скрин — поправлю.
+-- ------------------------------
+-- Окончание
+-- ------------------------------
+-- Если скрипт не запустился — пришли, пожалуйста:
+-- 1) Какой эксплойт (Delta / Synapse / Fluxus)? 
+-- 2) Текст ошибки (ошибка в консоли/всплывающий). 
+-- Я быстро поправлю.
