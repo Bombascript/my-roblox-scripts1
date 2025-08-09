@@ -1,19 +1,17 @@
--- Monster6715 Mobile Hub v5.0
--- Адаптировано под телефон с удобным управлением
+-- Ronix Hub Key System
+-- Blade Ball Edition
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Workspace = game:GetService("Workspace")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-local camera = Workspace.CurrentCamera
 
--- Основные настройки
-local correctPassword = "monster6715"
+-- Настройки системы
+local HUB_KEY = "Monster6715"
 local authenticated = false
 local menuVisible = false
 local espEnabled = false
@@ -21,400 +19,202 @@ local espObjects = {}
 
 -- Создание интерфейса
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "MonsterMobileHub"
+screenGui.Name = "RonixHub"
 screenGui.ResetOnSpawn = false
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
--- Авторизация (боковое меню)
-local authFrame = Instance.new("Frame")
-authFrame.Name = "AuthFrame"
-authFrame.Parent = screenGui
-authFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-authFrame.Position = UDim2.new(0, -200, 0.5, -100)
-authFrame.Size = UDim2.new(0, 180, 0, 200)
-authFrame.ZIndex = 100
-
-local authCorner = Instance.new("UICorner")
-authCorner.CornerRadius = UDim.new(0, 12)
-authCorner.Parent = authFrame
-
-local authInput = Instance.new("TextBox")
-authInput.Name = "AuthInput"
-authInput.Parent = authFrame
-authInput.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-authInput.Position = UDim2.new(0.5, -80, 0.3, 0)
-authInput.Size = UDim2.new(0, 160, 0, 40)
-authInput.Font = Enum.Font.Gotham
-authInput.PlaceholderText = "Введите пароль"
-authInput.Text = ""
-authInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-authInput.TextSize = 14
-
-local authButton = Instance.new("TextButton")
-authButton.Name = "AuthButton"
-authButton.Parent = authFrame
-authButton.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-authButton.Position = UDim2.new(0.5, -70, 0.6, 0)
-authButton.Size = UDim2.new(0, 140, 0, 40)
-authButton.Font = Enum.Font.GothamBold
-authButton.Text = "Активировать"
-authButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-authButton.TextSize = 14
-
-local authToggle = Instance.new("TextButton")
-authToggle.Name = "AuthToggle"
-authToggle.Parent = screenGui
-authToggle.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-authToggle.Position = UDim2.new(0, 10, 0.5, -25)
-authToggle.Size = UDim2.new(0, 40, 0, 50)
-authToggle.Font = Enum.Font.GothamBold
-authToggle.Text = "🔑"
-authToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-authToggle.TextSize = 18
-authToggle.ZIndex = 90
-
--- Главное меню
+-- Главное меню (Key System)
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainMenu"
 mainFrame.Parent = screenGui
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
-mainFrame.Size = UDim2.new(0, 300, 0, 400)
-mainFrame.Visible = false
-mainFrame.ZIndex = 10
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+mainFrame.Size = UDim2.new(0, 300, 0, 200)
+mainFrame.Visible = true
 
-local mainCorner = Instance.new("UICorner")
-mainCorner.CornerRadius = UDim.new(0, 12)
-mainCorner.Parent = mainFrame
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 8)
+corner.Parent = mainFrame
 
--- Заголовок с кнопками
-local titleBar = Instance.new("Frame")
-titleBar.Name = "TitleBar"
-titleBar.Parent = mainFrame
-titleBar.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-titleBar.Size = UDim2.new(1, 0, 0, 40)
-titleBar.ZIndex = 11
+-- Заголовок
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Parent = mainFrame
+title.BackgroundTransparency = 1
+title.Position = UDim2.new(0, 0, 0, 10)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Font = Enum.Font.GothamBold
+title.Text = "Ronix Hub Key System"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 18
 
-local titleText = Instance.new("TextLabel")
-titleText.Name = "TitleText"
-titleText.Parent = titleBar
-titleText.BackgroundTransparency = 1
-titleText.Size = UDim2.new(0.7, 0, 1, 0)
-titleText.Font = Enum.Font.GothamBold
-titleText.Text = "MONSTER HUB"
-titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleText.TextSize = 16
+local keyLabel = Instance.new("TextLabel")
+keyLabel.Name = "KeyLabel"
+keyLabel.Parent = mainFrame
+keyLabel.BackgroundTransparency = 1
+keyLabel.Position = UDim2.new(0, 0, 0.2, 0)
+keyLabel.Size = UDim2.new(1, 0, 0, 20)
+keyLabel.Font = Enum.Font.GothamBold
+keyLabel.Text = HUB_KEY
+keyLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+keyLabel.TextSize = 16
 
-local hideButton = Instance.new("TextButton")
-hideButton.Name = "HideButton"
-hideButton.Parent = titleBar
-hideButton.BackgroundTransparency = 1
-hideButton.Position = UDim2.new(0.7, 0, 0, 0)
-hideButton.Size = UDim2.new(0.15, 0, 1, 0)
-hideButton.Font = Enum.Font.GothamBold
-hideButton.Text = "─"
-hideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-hideButton.TextSize = 18
+-- Описание
+local desc = Instance.new("TextLabel")
+desc.Name = "Description"
+desc.Parent = mainFrame
+desc.BackgroundTransparency = 1
+desc.Position = UDim2.new(0.1, 0, 0.35, 0)
+desc.Size = UDim2.new(0.8, 0, 0, 40)
+desc.Font = Enum.Font.Gotham
+desc.Text = "How to get key?\nComplete a checkpoint to receive the key"
+desc.TextColor3 = Color3.fromRGB(200, 200, 200)
+desc.TextSize = 14
+desc.TextWrapped = true
 
-local closeButton = Instance.new("TextButton")
-closeButton.Name = "CloseButton"
-closeButton.Parent = titleBar
-closeButton.BackgroundTransparency = 1
-closeButton.Position = UDim2.new(0.85, 0, 0, 0)
-closeButton.Size = UDim2.new(0.15, 0, 1, 0)
-closeButton.Font = Enum.Font.GothamBold
-closeButton.Text = "×"
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.TextSize = 20
-
--- Кнопки режимов
-local modes = {
-    {name = "BladeBall", color = Color3.fromRGB(255, 80, 80)},
-    {name = "99 Night", color = Color3.fromRGB(80, 80, 255)},
-    {name = "Steal a Brairot", color = Color3.fromRGB(80, 255, 80)}
+-- Кнопки меню
+local buttons = {
+    {name = "Join Discord", pos = 0.6},
+    {name = "Get Key (LootLabs)", pos = 0.75},
+    {name = "Get Key (Linkvertise)", pos = 0.9}
 }
 
-local modeButtons = {}
-for i, mode in ipairs(modes) do
-    local btn = Instance.new("TextButton")
-    btn.Name = mode.name .. "Btn"
-    btn.Parent = mainFrame
-    btn.BackgroundColor3 = mode.color
-    btn.Position = UDim2.new(0.1, 0, 0.15 + (i-1)*0.25, 0)
-    btn.Size = UDim2.new(0.8, 0, 0.2, 0)
-    btn.Font = Enum.Font.GothamBold
-    btn.Text = mode.name
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextSize = 16
-    modeButtons[mode.name] = btn
+for _, btn in ipairs(buttons) do
+    local button = Instance.new("TextButton")
+    button.Name = btn.name
+    button.Parent = mainFrame
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+    button.Position = UDim2.new(0.1, 0, btn.pos, 0)
+    button.Size = UDim2.new(0.8, 0, 0.1, 0)
+    button.Font = Enum.Font.Gotham
+    button.Text = btn.name
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 14
+    
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 4)
+    btnCorner.Parent = button
+    
+    button.MouseButton1Click:Connect(function()
+        if btn.name == "Join Discord" then
+            -- Логика для Discord
+        elseif btn.name:find("LootLabs") then
+            -- Логика для LootLabs
+        else
+            -- Логика для Linkvertise
+        end
+    end)
 end
 
--- Меню BladeBall
+-- Blade Ball Menu
 local bbFrame = Instance.new("Frame")
-bbFrame.Name = "BladeBallFrame"
+bbFrame.Name = "BladeBallMenu"
 bbFrame.Parent = screenGui
 bbFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-bbFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
-bbFrame.Size = UDim2.new(0, 300, 0, 400)
+bbFrame.Position = UDim2.new(0.5, -175, 0.5, -150)
+bbFrame.Size = UDim2.new(0, 350, 0, 300)
 bbFrame.Visible = false
-bbFrame.ZIndex = 20
 
-local bbTitle = Instance.new("Frame")
-bbTitle.Name = "BBTitle"
-bbTitle.Parent = bbFrame
-bbTitle.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-bbTitle.Size = UDim2.new(1, 0, 0, 40)
-bbTitle.ZIndex = 21
+local bbCorner = Instance.new("UICorner")
+bbCorner.CornerRadius = UDim.new(0, 8)
+bbCorner.Parent = bbFrame
 
-local bbTitleText = Instance.new("TextLabel")
-bbTitleText.Name = "BBTitleText"
-bbTitleText.Parent = bbTitle
-bbTitleText.BackgroundTransparency = 1
-bbTitleText.Size = UDim2.new(0.6, 0, 1, 0)
-bbTitleText.Font = Enum.Font.GothamBold
-bbTitleText.Text = "BLADE BALL"
-bbTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-bbTitleText.TextSize = 16
-
-local bbBackBtn = Instance.new("TextButton")
-bbBackBtn.Name = "BBBackBtn"
-bbBackBtn.Parent = bbTitle
-bbBackBtn.BackgroundTransparency = 1
-bbBackBtn.Position = UDim2.new(0.6, 0, 0, 0)
-bbBackBtn.Size = UDim2.new(0.2, 0, 1, 0)
-bbBackBtn.Font = Enum.Font.GothamBold
-bbBackBtn.Text = "←"
-bbBackBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-bbBackBtn.TextSize = 18
-
-local bbHideBtn = Instance.new("TextButton")
-bbHideBtn.Name = "BBHideBtn"
-bbHideBtn.Parent = bbTitle
-bbHideBtn.BackgroundTransparency = 1
-bbHideBtn.Position = UDim2.new(0.8, 0, 0, 0)
-bbHideBtn.Size = UDim2.new(0.2, 0, 1, 0)
-bbHideBtn.Font = Enum.Font.GothamBold
-bbHideBtn.Text = "─"
-bbHideBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-bbHideBtn.TextSize = 18
-
--- Настройки BladeBall
-local bbSettings = {
-    AutoParry = {enabled = false, y = 0.15},
-    AutoClick = {enabled = false, y = 0.25},
-    ESP = {enabled = false, y = 0.35},
-    AntiCheatBypass = {enabled = false, y = 0.45}
+-- Blade Ball Features
+local features = {
+    {name = "Auto Parry", y = 0.15, func = function() end},
+    {name = "Auto Click", y = 0.25, func = function() end},
+    {name = "Player ESP", y = 0.35, func = function() end},
+    {name = "Ball Tracker", y = 0.45, func = function() end}
 }
 
-for name, setting in pairs(bbSettings) do
+for _, feat in ipairs(features) do
     local frame = Instance.new("Frame")
-    frame.Name = name .. "Frame"
+    frame.Name = feat.name .. "Frame"
     frame.Parent = bbFrame
     frame.BackgroundTransparency = 1
-    frame.Position = UDim2.new(0.1, 0, setting.y, 0)
-    frame.Size = UDim2.new(0.8, 0, 0.08, 0)
+    frame.Position = UDim2.new(0.1, 0, feat.y, 0)
+    frame.Size = UDim2.new(0.8, 0, 0.1, 0)
     
     local label = Instance.new("TextLabel")
-    label.Name = name .. "Label"
+    label.Name = feat.name .. "Label"
     label.Parent = frame
     label.BackgroundTransparency = 1
-    label.Size = UDim2.new(0.7, 0, 1, 0)
+    label.Size = UDim2.new(0.6, 0, 1, 0)
     label.Font = Enum.Font.Gotham
-    label.Text = name
+    label.Text = feat.name
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
     
     local toggle = Instance.new("TextButton")
-    toggle.Name = name .. "Toggle"
+    toggle.Name = feat.name .. "Toggle"
     toggle.Parent = frame
     toggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-    toggle.Position = UDim2.new(0.7, 0, 0.1, 0)
-    toggle.Size = UDim2.new(0.3, 0, 0.8, 0)
+    toggle.Position = UDim2.new(0.6, 0, 0.1, 0)
+    toggle.Size = UDim2.new(0.4, 0, 0.8, 0)
     toggle.Font = Enum.Font.GothamBold
     toggle.Text = "OFF"
     toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggle.TextSize = 12
+    toggle.TextSize = 14
+    
+    local tCorner = Instance.new("UICorner")
+    tCorner.CornerRadius = UDim.new(0, 4)
+    tCorner.Parent = toggle
+    
+    toggle.MouseButton1Click:Connect(function()
+        local current = toggle.Text == "OFF"
+        toggle.Text = current and "ON" or "OFF"
+        toggle.BackgroundColor3 = current and Color3.fromRGB(80, 255, 80) or Color3.fromRGB(255, 80, 80)
+        feat.func(current)
+    end)
 end
 
--- AntiCheat Label
-local acLabel = Instance.new("TextLabel")
-acLabel.Name = "ACLabel"
-acLabel.Parent = bbFrame
-acLabel.BackgroundTransparency = 1
-acLabel.Position = UDim2.new(0.1, 0, 0.9, 0)
-acLabel.Size = UDim2.new(0.8, 0, 0.05, 0)
-acLabel.Font = Enum.Font.Gotham
-acLabel.Text = "AntiCheat>by:monster"
-acLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-acLabel.TextSize = 10
+-- Кнопка переключения между меню
+local switchBtn = Instance.new("TextButton")
+switchBtn.Name = "SwitchButton"
+switchBtn.Parent = screenGui
+switchBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+switchBtn.Position = UDim2.new(0, 20, 0, 20)
+switchBtn.Size = UDim2.new(0, 120, 0, 40)
+switchBtn.Font = Enum.Font.GothamBold
+switchBtn.Text = "Blade Ball Menu"
+switchBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+switchBtn.TextSize = 14
 
--- Функции ESP
-local function createESP(target)
-    if target == player then return end
-    
-    local char = target.Character
-    if not char then return end
-    
-    local esp = Instance.new("Highlight")
-    esp.Name = "ESP_" .. target.Name
-    esp.Parent = char
-    esp.OutlineColor = Color3.fromRGB(255, 80, 80)
-    esp.FillColor = Color3.fromRGB(255, 80, 80)
-    esp.FillTransparency = 0.8
-    esp.OutlineTransparency = 0
-    esp.Enabled = espEnabled
-    
-    espObjects[target.Name] = esp
-end
+local sCorner = Instance.new("UICorner")
+sCorner.CornerRadius = UDim.new(0, 4)
+sCorner.Parent = switchBtn
 
+switchBtn.MouseButton1Click:Connect(function()
+    mainFrame.Visible = not mainFrame.Visible
+    bbFrame.Visible = not bbFrame.Visible
+    switchBtn.Text = mainFrame.Visible and "Blade Ball Menu" or "Key System"
+end)
+
+-- ESP функция
 local function updateESP()
-    for _, esp in pairs(espObjects) do
-        if esp then
-            esp.Enabled = espEnabled
-        end
-    end
-end
-
--- Автоотбивание
-local autoParryConn = nil
-local function startAutoParry()
-    autoParryConn = RunService.Heartbeat:Connect(function()
-        local ball = workspace:FindFirstChild("Ball")
-        if not ball then return end
-        
-        local char = player.Character
-        if not char then return end
-        
-        local root = char:FindFirstChild("HumanoidRootPart")
-        if not root then return end
-        
-        local dist = (ball.Position - root.Position).Magnitude
-        if dist < 20 then
-            local args = {
-                [1] = 0.5,
-                [2] = CFrame.new(root.Position, ball.Position),
-                [3] = {ball, ball.Position}
-            }
-            
-            pcall(function()
-                if ReplicatedStorage:FindFirstChild("Remotes") then
-                    local remotes = ReplicatedStorage.Remotes
-                    if remotes:FindFirstChild("ParryAttempt") then
-                        remotes.ParryAttempt:FireServer(unpack(args))
-                    elseif remotes:FindFirstChild("Parry") then
-                        remotes.Parry:FireServer(unpack(args))
-                    end
-                end
-            end)
-        end
-    end)
-end
-
--- Обработчики событий
-authButton.MouseButton1Click:Connect(function()
-    if authInput.Text == correctPassword then
-        authenticated = true
-        TweenService:Create(authFrame, TweenInfo.new(0.3), {
-            Position = UDim2.new(0, -200, 0.5, -100)
-        }):Play()
-    else
-        authInput.Text = ""
-        authInput.PlaceholderText = "Неверный пароль!"
-        task.wait(1)
-        authInput.PlaceholderText = "Введите пароль"
-    end
-end)
-
-authToggle.MouseButton1Click:Connect(function()
-    TweenService:Create(authFrame, TweenInfo.new(0.3), {
-        Position = UDim2.new(0, 10, 0.5, -100)
-    }):Play()
-end)
-
--- Открытие главного меню
-local toggleBtn = Instance.new("TextButton")
-toggleBtn.Name = "ToggleBtn"
-toggleBtn.Parent = screenGui
-toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-toggleBtn.Position = UDim2.new(0, 10, 0.1, 0)
-toggleBtn.Size = UDim2.new(0, 100, 0, 40)
-toggleBtn.Font = Enum.Font.GothamBold
-toggleBtn.Text = "MENU"
-toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-toggleBtn.TextSize = 14
-toggleBtn.Visible = authenticated
-toggleBtn.ZIndex = 5
-
-toggleBtn.MouseButton1Click:Connect(function()
-    menuVisible = not menuVisible
-    mainFrame.Visible = menuVisible
-end)
-
--- Выбор режима
-modeButtons["BladeBall"].MouseButton1Click:Connect(function()
-    mainFrame.Visible = false
-    bbFrame.Visible = true
-end)
-
--- Назад в главное меню
-bbBackBtn.MouseButton1Click:Connect(function()
-    bbFrame.Visible = false
-    mainFrame.Visible = true
-end)
-
--- Скрытие меню
-hideButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = false
-end)
-
-bbHideBtn.MouseButton1Click:Connect(function()
-    bbFrame.Visible = false
-end)
-
--- Закрытие меню
-closeButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = false
-    toggleBtn.Visible = false
-end)
-
--- Переключение настроек BladeBall
-for name, _ in pairs(bbSettings) do
-    local toggle = bbFrame:FindFirstChild(name .. "Frame"):FindFirstChild(name .. "Toggle")
-    if toggle then
-        toggle.MouseButton1Click:Connect(function()
-            bbSettings[name].enabled = not bbSettings[name].enabled
-            toggle.Text = bbSettings[name].enabled and "ON" or "OFF"
-            toggle.BackgroundColor3 = bbSettings[name].enabled and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(60, 60, 70)
-            
-            if name == "AutoParry" then
-                if bbSettings[name].enabled then
-                    startAutoParry()
-                elseif autoParryConn then
-                    autoParryConn:Disconnect()
-                end
-            elseif name == "ESP" then
-                espEnabled = bbSettings[name].enabled
-                updateESP()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= Players.LocalPlayer and player.Character then
+            local highlight = player.Character:FindFirstChildOfClass("Highlight")
+            if espEnabled and not highlight then
+                highlight = Instance.new("Highlight")
+                highlight.Parent = player.Character
+                highlight.FillColor = Color3.fromRGB(255, 80, 80)
+                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+            elseif not espEnabled and highlight then
+                highlight:Destroy()
             end
-        end)
-    end
-end
-
--- Инициализация ESP для игроков
-Players.PlayerAdded:Connect(function(plr)
-    plr.CharacterAdded:Connect(function(char)
-        if espEnabled then
-            createESP(plr)
         end
-    end)
-end)
-
-for _, plr in pairs(Players:GetPlayers()) do
-    if plr ~= player and plr.Character then
-        createESP(plr)
     end
 end
 
-print("Monster Mobile Hub v5.0 loaded | Password: monster6715")
+-- Auto Parry функция
+local function autoParry(enable)
+    if enable then
+        -- Логика автоотбивания
+    else
+        -- Отключение логики
+    end
+end
+
+print("Ronix Hub Loaded | Key: "..HUB_KEY)
