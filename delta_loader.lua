@@ -77,67 +77,93 @@ ScreenGui.Name = "MobileBrainrotGUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
+-- Адаптированное под мобильный экран меню авторизации
 local AuthFrame = Instance.new("Frame")
-AuthFrame.Size = UDim2.new(0, 300, 0, 200)
-AuthFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
-AuthFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+AuthFrame.Size = UDim2.new(0, 280, 0, 220)
+AuthFrame.Position = UDim2.new(0.5, -140, 0.5, -110)
+AuthFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
 AuthFrame.BorderSizePixel = 0
 AuthFrame.Parent = ScreenGui
 
 local UICornerAuth = Instance.new("UICorner")
-UICornerAuth.CornerRadius = UDim.new(0, 8)
+UICornerAuth.CornerRadius = UDim.new(0, 12)
 UICornerAuth.Parent = AuthFrame
 
+-- Градиент для фона
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 50)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 30))
+}
+UIGradient.Rotation = 45
+UIGradient.Parent = AuthFrame
+
 local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Size = UDim2.new(1, 0, 0, 40)
-TitleLabel.Position = UDim2.new(0, 0, 0, 10)
-TitleLabel.Text = "Требуется авторизация"
-TitleLabel.TextColor3 = Color3.new(1, 1, 1)
+TitleLabel.Size = UDim2.new(1, -20, 0, 35)
+TitleLabel.Position = UDim2.new(0, 10, 0, 15)
+TitleLabel.Text = "🔐 Авторизация"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.Font = Enum.Font.GothamBold
-TitleLabel.TextSize = 20
+TitleLabel.TextSize = 18
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Parent = AuthFrame
 
 local KeyBox = Instance.new("TextBox")
-KeyBox.Size = UDim2.new(0.8, 0, 0, 40)
-KeyBox.Position = UDim2.new(0.1, 0, 0.3, 0)
-KeyBox.PlaceholderText = "Ключ ввел быстро"
+KeyBox.Size = UDim2.new(0.85, 0, 0, 40)
+KeyBox.Position = UDim2.new(0.075, 0, 0.28, 0)
+KeyBox.PlaceholderText = "Введите ключ..."
 KeyBox.Text = ""
-KeyBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+KeyBox.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
 KeyBox.TextColor3 = Color3.new(1, 1, 1)
 KeyBox.Font = Enum.Font.Gotham
-KeyBox.TextSize = 16
+KeyBox.TextSize = 14
 KeyBox.Parent = AuthFrame
 
+local UICornerKey = Instance.new("UICorner")
+UICornerKey.CornerRadius = UDim.new(0, 8)
+UICornerKey.Parent = KeyBox
+
 local SubmitButton = Instance.new("TextButton")
-SubmitButton.Size = UDim2.new(0.5, 0, 0, 35)
-SubmitButton.Position = UDim2.new(0.25, 0, 0.55, 0)
-SubmitButton.Text = "Активировать"
-SubmitButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+SubmitButton.Size = UDim2.new(0.6, 0, 0, 35)
+SubmitButton.Position = UDim2.new(0.2, 0, 0.5, 0)
+SubmitButton.Text = "✓ Войти"
+SubmitButton.BackgroundColor3 = Color3.fromRGB(50, 150, 100)
 SubmitButton.TextColor3 = Color3.new(1, 1, 1)
-SubmitButton.Font = Enum.Font.Gotham
-SubmitButton.TextSize = 16
+SubmitButton.Font = Enum.Font.GothamBold
+SubmitButton.TextSize = 15
 SubmitButton.Parent = AuthFrame
 
+local UICornerSubmit = Instance.new("UICorner")
+UICornerSubmit.CornerRadius = UDim.new(0, 8)
+UICornerSubmit.Parent = SubmitButton
+
 local LinkvertiseButton = Instance.new("TextButton")
-LinkvertiseButton.Size = UDim2.new(0.8, 0, 0, 35)
-LinkvertiseButton.Position = UDim2.new(0.1, 0, 0.8, 0)
-LinkvertiseButton.Text = "Ключ на (Linkvertise)"
-LinkvertiseButton.BackgroundColor3 = Color3.fromRGB(0, 180, 120)
+LinkvertiseButton.Size = UDim2.new(0.85, 0, 0, 32)
+LinkvertiseButton.Position = UDim2.new(0.075, 0, 0.7, 0)
+LinkvertiseButton.Text = "🔑 Получить ключ"
+LinkvertiseButton.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
 LinkvertiseButton.TextColor3 = Color3.new(1, 1, 1)
 LinkvertiseButton.Font = Enum.Font.Gotham
-LinkvertiseButton.TextSize = 14
+LinkvertiseButton.TextSize = 13
 LinkvertiseButton.Parent = AuthFrame
 
+local UICornerLink = Instance.new("UICorner")
+UICornerLink.CornerRadius = UDim.new(0, 8)
+UICornerLink.Parent = LinkvertiseButton
+
 local TelegramLink = Instance.new("TextButton")
-TelegramLink.Size = UDim2.new(0.4, 0, 0, 20)
-TelegramLink.Position = UDim2.new(0.3, 0, 1.05, 0)
-TelegramLink.Text = "Telegram"
+TelegramLink.Size = UDim2.new(0.4, 0, 0, 25)
+TelegramLink.Position = UDim2.new(0.3, 0, 0.9, 0)
+TelegramLink.Text = "📱 Telegram"
 TelegramLink.BackgroundColor3 = Color3.fromRGB(0, 136, 204)
 TelegramLink.TextColor3 = Color3.new(1, 1, 1)
 TelegramLink.Font = Enum.Font.Gotham
-TelegramLink.TextSize = 12
+TelegramLink.TextSize = 11
 TelegramLink.Parent = AuthFrame
+
+local UICornerTg = Instance.new("UICorner")
+UICornerTg.CornerRadius = UDim.new(0, 6)
+UICornerTg.Parent = TelegramLink
 
 local LINKVERTISE_LINK = "Пароль monster6715"
 local TELEGRAM_LINK = "неа"
@@ -178,16 +204,16 @@ end
 
 LinkvertiseButton.MouseButton1Click:Connect(function()
     copyToClipboard(LINKVERTISE_LINK)
-    LinkvertiseButton.Text = "Ссылка скопирована!"
+    LinkvertiseButton.Text = "✅ Скопировано!"
     task.wait(1.5)
-    LinkvertiseButton.Text = "Получить ключ (Linkvertise)"
+    LinkvertiseButton.Text = "🔑 Получить ключ"
 end)
 
 TelegramLink.MouseButton1Click:Connect(function()
     copyToClipboard(TELEGRAM_LINK)
-    TelegramLink.Text = "Скопировано!"
+    TelegramLink.Text = "✅ Готово!"
     task.wait(1.5)
-    TelegramLink.Text = "Telegram"
+    TelegramLink.Text = "📱 Telegram"
 end)
 
 SubmitButton.MouseButton1Click:Connect(function()
@@ -197,7 +223,7 @@ SubmitButton.MouseButton1Click:Connect(function()
         loadMainGUI()
     else
         KeyBox.Text = ""
-        KeyBox.PlaceholderText = "Пидар"
+        KeyBox.PlaceholderText = "Неверный ключ!"
     end
 end)
 
@@ -205,20 +231,30 @@ function loadMainGUI()
     local draggingGG, dragInputGG, dragStartGG, startPosGG
     local draggingMain, dragInputMain, dragStartMain, startPosMain
 
+    -- Компактная кнопка переключения
     local ToggleBtn = Instance.new("TextButton")
-    ToggleBtn.Size = UDim2.new(0, 60, 0, 60)
-    ToggleBtn.Position = UDim2.new(0, 10, 0.5, -30)
-    ToggleBtn.BackgroundColor3 = Color3.new(0, 0, 0)
-    ToggleBtn.TextColor3 = Color3.new(1, 1, 1)
-    ToggleBtn.Text = "GG"
+    ToggleBtn.Size = UDim2.new(0, 55, 0, 55)
+    ToggleBtn.Position = UDim2.new(0, 15, 0.5, -27.5)
+    ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+    ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleBtn.Text = "🎮"
     ToggleBtn.Font = Enum.Font.GothamBlack
-    ToggleBtn.TextSize = 20
+    ToggleBtn.TextSize = 24
     ToggleBtn.ZIndex = 2
     ToggleBtn.Parent = ScreenGui
 
     local UICornerGG = Instance.new("UICorner")
-    UICornerGG.CornerRadius = UDim.new(0, 12)
+    UICornerGG.CornerRadius = UDim.new(0, 15)
     UICornerGG.Parent = ToggleBtn
+
+    -- Градиент для кнопки
+    local UIGradientBtn = Instance.new("UIGradient")
+    UIGradientBtn.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 45)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 25))
+    }
+    UIGradientBtn.Rotation = 45
+    UIGradientBtn.Parent = ToggleBtn
 
     local function updateGGInput(input)
         local delta = input.Position - dragStartGG
@@ -251,17 +287,38 @@ function loadMainGUI()
         end
     end)
 
+    -- Основное меню - адаптированное под мобильные устройства
     local MainFrame = Instance.new("Frame")
-    MainFrame.Size = UDim2.new(0, 220, 0, 250)
-    MainFrame.Position = UDim2.new(0, 80, 0.5, -125)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    MainFrame.BackgroundTransparency = 0.3
+    MainFrame.Size = UDim2.new(0, 200, 0, 320) -- Уменьшена ширина, увеличена высота
+    MainFrame.Position = UDim2.new(0, 80, 0.5, -160)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+    MainFrame.BackgroundTransparency = 0.1
     MainFrame.Visible = false
     MainFrame.Parent = ScreenGui
 
     local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 8)
+    UICorner.CornerRadius = UDim.new(0, 12)
     UICorner.Parent = MainFrame
+
+    -- Градиент для главного меню
+    local UIGradientMain = Instance.new("UIGradient")
+    UIGradientMain.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 45)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 25))
+    }
+    UIGradientMain.Rotation = 135
+    UIGradientMain.Parent = MainFrame
+
+    -- Заголовок меню
+    local HeaderLabel = Instance.new("TextLabel")
+    HeaderLabel.Size = UDim2.new(1, -10, 0, 30)
+    HeaderLabel.Position = UDim2.new(0, 5, 0, 5)
+    HeaderLabel.Text = "⚡ Mobile Hack"
+    HeaderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    HeaderLabel.Font = Enum.Font.GothamBold
+    HeaderLabel.TextSize = 16
+    HeaderLabel.BackgroundTransparency = 1
+    HeaderLabel.Parent = MainFrame
 
     local function updateMainInput(input)
         local delta = input.Position - dragStartMain
@@ -294,31 +351,40 @@ function loadMainGUI()
         end
     end)
 
-    local function createButton(name, positionY)
+    local function createButton(name, positionY, emoji)
         local button = Instance.new("TextButton")
-        button.Size = UDim2.new(0.9, 0, 0, 28)
-        button.Position = UDim2.new(0.05, 0, 0.05 + positionY * 0.12, 0)
-        button.Text = name
-        button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+        button.Size = UDim2.new(0.92, 0, 0, 35) -- Увеличена высота кнопок
+        button.Position = UDim2.new(0.04, 0, 0.12 + positionY * 0.12, 0)
+        button.Text = emoji .. " " .. name
+        button.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
         button.TextColor3 = Color3.new(1, 1, 1)
         button.Font = Enum.Font.Gotham
-        button.TextSize = 14
+        button.TextSize = 12
         button.Parent = MainFrame
         
         local uiCorner = Instance.new("UICorner")
-        uiCorner.CornerRadius = UDim.new(0, 6)
+        uiCorner.CornerRadius = UDim.new(0, 8)
         uiCorner.Parent = button
+        
+        -- Градиент для кнопок
+        local btnGradient = Instance.new("UIGradient")
+        btnGradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 50, 65)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(35, 35, 50))
+        }
+        btnGradient.Rotation = 90
+        btnGradient.Parent = button
         
         return button
     end
 
-    local NoclipBtn = createButton("Ноуклип нерабочий: OFF", 0)
-    local ESPBtn = createButton("Есп: OFF", 1)
-    local FlyBtn = createButton("Флай Нерабочий: OFF", 2)
-    local SetBaseBtn = createButton("Позиция Базы", 3)
-    local FloatBtn = createButton("Тп на базу хз", 4)
-    local AutoStealBtn = createButton("Авто кража: OFF", 5)
-    local BoostSpeedBtn = createButton("Буст спид: OFF", 6)
+    local NoclipBtn = createButton("NoClip: OFF", 0, "👻")
+    local ESPBtn = createButton("ESP: OFF", 1, "👁️")
+    local FlyBtn = createButton("Fly: OFF", 2, "✈️")
+    local SetBaseBtn = createButton("Set Base", 3, "🏠")
+    local FloatBtn = createButton("Float to Base", 4, "🎈")
+    local AutoStealBtn = createButton("Auto Steal: OFF", 5, "💰")
+    local BoostSpeedBtn = createButton("Speed: OFF", 6, "⚡")
 
     local function toggleGUI()
         MainFrame.Visible = not MainFrame.Visible
@@ -344,39 +410,58 @@ function loadMainGUI()
     local autoStealTimer = nil
     local autoStealCooldown = false
 
+    -- Мобильное меню управления полетом
     local FlyGui = Instance.new("Frame")
-    FlyGui.Size = UDim2.new(0, 120, 0, 70)
-    FlyGui.Position = UDim2.new(0, 80, 1, -110)
-    FlyGui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    FlyGui.BackgroundTransparency = 0.3
+    FlyGui.Size = UDim2.new(0, 120, 0, 80)
+    FlyGui.Position = UDim2.new(0, 85, 1, -120)
+    FlyGui.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+    FlyGui.BackgroundTransparency = 0.1
     FlyGui.Visible = false
     FlyGui.Parent = ScreenGui
 
     local UICornerFly = Instance.new("UICorner")
-    UICornerFly.CornerRadius = UDim.new(0, 8)
+    UICornerFly.CornerRadius = UDim.new(0, 12)
     UICornerFly.Parent = FlyGui
 
+    local flyGradient = Instance.new("UIGradient")
+    flyGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 45)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 25))
+    }
+    flyGradient.Rotation = 45
+    flyGradient.Parent = FlyGui
+
     local FlyForwardBtn = Instance.new("TextButton")
-    FlyForwardBtn.Size = UDim2.new(0.4, 0, 0.4, 0)
-    FlyForwardBtn.Position = UDim2.new(0.3, 0, 0.1, 0)
-    FlyForwardBtn.Text = "↑"
-    FlyForwardBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    FlyForwardBtn.Size = UDim2.new(0.35, 0, 0.35, 0)
+    FlyForwardBtn.Position = UDim2.new(0.325, 0, 0.1, 0)
+    FlyForwardBtn.Text = "⬆️"
+    FlyForwardBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
     FlyForwardBtn.TextColor3 = Color3.new(1, 1, 1)
+    FlyForwardBtn.TextSize = 16
     FlyForwardBtn.Parent = FlyGui
 
+    local flyForwardCorner = Instance.new("UICorner")
+    flyForwardCorner.CornerRadius = UDim.new(0, 8)
+    flyForwardCorner.Parent = FlyForwardBtn
+
     local FlyBackwardBtn = Instance.new("TextButton")
-    FlyBackwardBtn.Size = UDim2.new(0.4, 0, 0.4, 0)
-    FlyBackwardBtn.Position = UDim2.new(0.3, 0, 0.5, 0)
-    FlyBackwardBtn.Text = "↓"
-    FlyBackwardBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    FlyBackwardBtn.Size = UDim2.new(0.35, 0, 0.35, 0)
+    FlyBackwardBtn.Position = UDim2.new(0.325, 0, 0.55, 0)
+    FlyBackwardBtn.Text = "⬇️"
+    FlyBackwardBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
     FlyBackwardBtn.TextColor3 = Color3.new(1, 1, 1)
+    FlyBackwardBtn.TextSize = 16
     FlyBackwardBtn.Parent = FlyGui
+
+    local flyBackwardCorner = Instance.new("UICorner")
+    flyBackwardCorner.CornerRadius = UDim.new(0, 8)
+    flyBackwardCorner.Parent = FlyBackwardBtn
 
     local function disableAllFunctions()
         if noclipActive then 
             noclipActive = false
-            NoclipBtn.Text = "NoClip: OFF"
-            NoclipBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            NoclipBtn.Text = "👻 NoClip: OFF"
+            NoclipBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
             if noclipConnection then
                 noclipConnection:Disconnect()
                 noclipConnection = nil
@@ -385,8 +470,8 @@ function loadMainGUI()
         
         if flyActive then 
             flyActive = false
-            FlyBtn.Text = "Fly: OFF"
-            FlyBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            FlyBtn.Text = "✈️ Fly: OFF"
+            FlyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
             FlyGui.Visible = false
             if flyConnection then
                 flyConnection:Disconnect()
@@ -396,7 +481,7 @@ function loadMainGUI()
         
         if floatActive then 
             floatActive = false
-            FloatBtn.Text = "Float to Base"
+            FloatBtn.Text = "🎈 Float to Base"
             if floatConnection then
                 floatConnection:Disconnect()
                 floatConnection = nil
@@ -405,8 +490,8 @@ function loadMainGUI()
         
         if boostSpeedActive then 
             boostSpeedActive = false
-            BoostSpeedBtn.Text = "Boost Speed: OFF"
-            BoostSpeedBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            BoostSpeedBtn.Text = "⚡ Speed: OFF"
+            BoostSpeedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
             if boostSpeedConnection then
                 boostSpeedConnection:Disconnect()
                 boostSpeedConnection = nil
@@ -418,8 +503,8 @@ function loadMainGUI()
         if autoStealActive then return end
         
         noclipActive = not noclipActive
-        NoclipBtn.Text = "NoClip: " .. (noclipActive and "ON" or "OFF")
-        NoclipBtn.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 120, 50) or Color3.fromRGB(70, 70, 70)
+        NoclipBtn.Text = "👻 NoClip: " .. (noclipActive and "ON" or "OFF")
+        NoclipBtn.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
         
         if noclipConnection then
             noclipConnection:Disconnect()
@@ -441,8 +526,8 @@ function loadMainGUI()
 
     local function toggleESP()
         espActive = not espActive
-        ESPBtn.Text = "ESP: " .. (espActive and "ON" or "OFF")
-        ESPBtn.BackgroundColor3 = espActive and Color3.fromRGB(50, 120, 50) or Color3.fromRGB(70, 70, 70)
+        ESPBtn.Text = "👁️ ESP: " .. (espActive and "ON" or "OFF")
+        ESPBtn.BackgroundColor3 = espActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
         
         for _, espData in pairs(espHandles) do
             if espData.highlight then espData.highlight:Destroy() end
@@ -502,8 +587,8 @@ function loadMainGUI()
         if autoStealActive then return end
         
         flyActive = not flyActive
-        FlyBtn.Text = "Fly: " .. (flyActive and "ON" or "OFF")
-        FlyBtn.BackgroundColor3 = flyActive and Color3.fromRGB(50, 120, 50) or Color3.fromRGB(70, 70, 70)
+        FlyBtn.Text = "✈️ Fly: " .. (flyActive and "ON" or "OFF")
+        FlyBtn.BackgroundColor3 = flyActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
         FlyGui.Visible = flyActive
         
         if flyConnection then
@@ -602,9 +687,9 @@ function loadMainGUI()
         if not humanoidRootPart then return end
         
         savedBasePosition = humanoidRootPart.Position + Vector3.new(0, 2, 0)
-        SetBaseBtn.Text = "Base Saved ✓"
+        SetBaseBtn.Text = "🏠 Base Saved ✓"
         task.delay(1, function()
-            SetBaseBtn.Text = "Set Base Position"
+            SetBaseBtn.Text = "🏠 Set Base"
         end)
     end
 
@@ -633,7 +718,7 @@ function loadMainGUI()
             humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
         end
         
-        FloatBtn.Text = "Floating..."
+        FloatBtn.Text = "🎈 Floating..."
         local startTime = tick()
         local speed = 40
         local minDistanceToStop = 3
@@ -646,7 +731,7 @@ function loadMainGUI()
         floatConnection = RunService.Heartbeat:Connect(function()
             if not floatActive or not humanoidRootPart or not humanoid then
                 floatConnection:Disconnect()
-                FloatBtn.Text = "Float to Base"
+                FloatBtn.Text = "🎈 Float to Base"
                 return
             end
             
@@ -660,7 +745,7 @@ function loadMainGUI()
                 floatActive = false
                 humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
                 floatConnection:Disconnect()
-                FloatBtn.Text = "Float to Base"
+                FloatBtn.Text = "🎈 Float to Base"
                 return
             end
             
@@ -668,7 +753,7 @@ function loadMainGUI()
                 floatActive = false
                 humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
                 floatConnection:Disconnect()
-                FloatBtn.Text = "Float to Base"
+                FloatBtn.Text = "🎈 Float to Base"
                 return
             end
             
@@ -685,8 +770,8 @@ function loadMainGUI()
         end
         
         autoStealActive = not autoStealActive
-        AutoStealBtn.Text = "Auto Steal: " .. (autoStealActive and "ON" or "OFF")
-        AutoStealBtn.BackgroundColor3 = autoStealActive and Color3.fromRGB(50, 120, 50) or Color3.fromRGB(70, 70, 70)
+        AutoStealBtn.Text = "💰 Auto Steal: " .. (autoStealActive and "ON" or "OFF")
+        AutoStealBtn.BackgroundColor3 = autoStealActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
         
         if autoStealConnection then
             autoStealConnection:Disconnect()
@@ -700,8 +785,8 @@ function loadMainGUI()
             local character = player.Character
             if not character then 
                 autoStealActive = false
-                AutoStealBtn.Text = "Auto Steal: OFF"
-                AutoStealBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+                AutoStealBtn.Text = "💰 Auto Steal: OFF"
+                AutoStealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
                 autoStealCooldown = false
                 return
             end
@@ -709,8 +794,8 @@ function loadMainGUI()
             local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
             if not humanoidRootPart then 
                 autoStealActive = false
-                AutoStealBtn.Text = "Auto Steal: OFF"
-                AutoStealBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+                AutoStealBtn.Text = "💰 Auto Steal: OFF"
+                AutoStealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
                 autoStealCooldown = false
                 return
             end
@@ -744,8 +829,8 @@ function loadMainGUI()
             
             savedBasePosition = originalBase
             autoStealActive = false
-            AutoStealBtn.Text = "Auto Steal: OFF"
-            AutoStealBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            AutoStealBtn.Text = "💰 Auto Steal: OFF"
+            AutoStealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
             autoStealCooldown = false
         else
             if autoStealTimer then
@@ -760,8 +845,8 @@ function loadMainGUI()
         if autoStealActive then return end
         
         boostSpeedActive = not boostSpeedActive
-        BoostSpeedBtn.Text = "Boost Speed: " .. (boostSpeedActive and "ON" or "OFF")
-        BoostSpeedBtn.BackgroundColor3 = boostSpeedActive and Color3.fromRGB(50, 120, 50) or Color3.fromRGB(70, 70, 70)
+        BoostSpeedBtn.Text = "⚡ Speed: " .. (boostSpeedActive and "ON" or "OFF")
+        BoostSpeedBtn.BackgroundColor3 = boostSpeedActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
         
         if boostSpeedConnection then
             boostSpeedConnection:Disconnect()
@@ -827,8 +912,8 @@ function loadMainGUI()
                 noclipConnection = nil
             end
             noclipActive = false
-            NoclipBtn.Text = "NoClip: OFF"
-            NoclipBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            NoclipBtn.Text = "👻 NoClip: OFF"
+            NoclipBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
         end
         
         if espActive then
@@ -848,14 +933,14 @@ function loadMainGUI()
                 flyConnection = nil
             end
             flyActive = false
-            FlyBtn.Text = "Fly: OFF"
-            FlyBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            FlyBtn.Text = "✈️ Fly: OFF"
+            FlyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
             FlyGui.Visible = false
         end
         
         if floatActive then
             floatActive = false
-            FloatBtn.Text = "Float to Base"
+            FloatBtn.Text = "🎈 Float to Base"
             if floatConnection then
                 floatConnection:Disconnect()
                 floatConnection = nil
@@ -868,8 +953,8 @@ function loadMainGUI()
                 autoStealConnection = nil
             end
             autoStealActive = false
-            AutoStealBtn.Text = "Auto Steal: OFF"
-            AutoStealBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            AutoStealBtn.Text = "💰 Auto Steal: OFF"
+            AutoStealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
             if autoStealTimer then
                 task.cancel(autoStealTimer)
                 autoStealTimer = nil
@@ -883,8 +968,8 @@ function loadMainGUI()
                 boostSpeedConnection = nil
             end
             boostSpeedActive = false
-            BoostSpeedBtn.Text = "Boost Speed: OFF"
-            BoostSpeedBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            BoostSpeedBtn.Text = "⚡ Speed: OFF"
+            BoostSpeedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
         end
     end)
 
