@@ -299,7 +299,7 @@ SubmitButton.MouseButton1Click:Connect(function()
     animateButton(SubmitButton)
     local inputKey = KeyBox.Text
     if handleKeySubmission(inputKey) then
-        local fadeOut = TweenService:Create(AuthFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1})
+        local fadeOut = TweenService:Create(AuthFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 0, 0, 0)})
         fadeOut:Play()
         fadeOut.Completed:Connect(function()
             AuthFrame:Destroy()
@@ -308,14 +308,14 @@ SubmitButton.MouseButton1Click:Connect(function()
     else
         KeyBox.Text = ""
         KeyBox.PlaceholderText = "❌ Неверный ключ!"
-        local shake = TweenService:Create(KeyContainer, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 30, 0, 140)})
-        local shakeBack = TweenService:Create(KeyContainer, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 20, 0, 140)})
+        local shake = TweenService:Create(KeyContainer, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 25, 0, 100)})
+        local shakeBack = TweenService:Create(KeyContainer, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 15, 0, 100)})
         shake:Play()
         shake.Completed:Connect(function()
             shakeBack:Play()
         end)
         task.wait(2)
-        KeyBox.PlaceholderText = "Введите ваш ключ..."
+        KeyBox.PlaceholderText = "Введите ключ..."
     end
 end)
 
@@ -568,9 +568,6 @@ function loadMainGUI()
     -- Close button functionality
     CloseButton.MouseButton1Click:Connect(function()
         animateButton(CloseButton)
-        local closeTween = TweenService:Create(ScreenGui, TweenInfo.new(0.5, Enum.EasingStyle.Quad), {Enabled = false})
-        closeTween:Play()
-        task.wait(0.5)
         ScreenGui:Destroy()
     end)
     end
