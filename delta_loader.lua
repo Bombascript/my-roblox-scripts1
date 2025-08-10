@@ -4,6 +4,7 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local TextService = game:GetService("TextService")
 local StarterGui = game:GetService("StarterGui")
+local TweenService = game:GetService("TweenService")
 
 local function createESP(targetPlayer)
     if not targetPlayer or not targetPlayer.Character then return end
@@ -67,103 +68,213 @@ end
 
 local function copyToClipboard(text)
     pcall(function()
-        createNotification("Ссылка скопирована", "Теперь вы можете вставить её в браузере", 2)
+        createNotification("Скопировано", "Информация скопирована в буфер обмена", 2)
         setclipboard(text)
     end)
 end
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MobileBrainrotGUI"
+ScreenGui.Name = "ModernMobileGUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Адаптированное под мобильный экран меню авторизации
+-- Современное окно авторизации
 local AuthFrame = Instance.new("Frame")
-AuthFrame.Size = UDim2.new(0, 280, 0, 220)
-AuthFrame.Position = UDim2.new(0.5, -140, 0.5, -110)
-AuthFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+AuthFrame.Size = UDim2.new(0, 320, 0, 280)
+AuthFrame.Position = UDim2.new(0.5, -160, 0.5, -140)
+AuthFrame.BackgroundColor3 = Color3.fromRGB(26, 26, 46)
 AuthFrame.BorderSizePixel = 0
 AuthFrame.Parent = ScreenGui
 
 local UICornerAuth = Instance.new("UICorner")
-UICornerAuth.CornerRadius = UDim.new(0, 12)
+UICornerAuth.CornerRadius = UDim.new(0, 20)
 UICornerAuth.Parent = AuthFrame
 
--- Градиент для фона
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 50)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 30))
+-- Градиент для авторизации
+local UIGradientAuth = Instance.new("UIGradient")
+UIGradientAuth.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(26, 26, 46)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(22, 33, 62)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 52, 96))
 }
-UIGradient.Rotation = 45
-UIGradient.Parent = AuthFrame
+UIGradientAuth.Rotation = 135
+UIGradientAuth.Parent = AuthFrame
 
-local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Size = UDim2.new(1, -20, 0, 35)
-TitleLabel.Position = UDim2.new(0, 10, 0, 15)
-TitleLabel.Text = "🔐 Авторизация"
-TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TitleLabel.Font = Enum.Font.GothamBold
-TitleLabel.TextSize = 18
-TitleLabel.BackgroundTransparency = 1
-TitleLabel.Parent = AuthFrame
+-- Тень для окна
+local AuthShadow = Instance.new("Frame")
+AuthShadow.Size = UDim2.new(1, 10, 1, 10)
+AuthShadow.Position = UDim2.new(0, -5, 0, -5)
+AuthShadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+AuthShadow.BackgroundTransparency = 0.8
+AuthShadow.ZIndex = 0
+AuthShadow.Parent = AuthFrame
+
+local UIShadowCorner = Instance.new("UICorner")
+UIShadowCorner.CornerRadius = UDim.new(0, 25)
+UIShadowCorner.Parent = AuthShadow
+
+-- Заголовок
+local AuthHeader = Instance.new("Frame")
+AuthHeader.Size = UDim2.new(1, 0, 0, 100)
+AuthHeader.Position = UDim2.new(0, 0, 0, 20)
+AuthHeader.BackgroundTransparency = 1
+AuthHeader.Parent = AuthFrame
+
+local AuthIcon = Instance.new("TextLabel")
+AuthIcon.Size = UDim2.new(1, 0, 0, 40)
+AuthIcon.Position = UDim2.new(0, 0, 0, 0)
+AuthIcon.Text = "🔐"
+AuthIcon.TextColor3 = Color3.fromRGB(102, 126, 234)
+AuthIcon.Font = Enum.Font.GothamBold
+AuthIcon.TextSize = 40
+AuthIcon.BackgroundTransparency = 1
+AuthIcon.Parent = AuthHeader
+
+local AuthTitle = Instance.new("TextLabel")
+AuthTitle.Size = UDim2.new(1, 0, 0, 25)
+AuthTitle.Position = UDim2.new(0, 0, 0, 45)
+AuthTitle.Text = "Secure Access"
+AuthTitle.TextColor3 = Color3.new(1, 1, 1)
+AuthTitle.Font = Enum.Font.GothamBold
+AuthTitle.TextSize = 22
+AuthTitle.BackgroundTransparency = 1
+AuthTitle.Parent = AuthHeader
+
+local AuthSubtitle = Instance.new("TextLabel")
+AuthSubtitle.Size = UDim2.new(1, 0, 0, 15)
+AuthSubtitle.Position = UDim2.new(0, 0, 0, 70)
+AuthSubtitle.Text = "Введите ключ доступа для продолжения"
+AuthSubtitle.TextColor3 = Color3.fromRGB(170, 170, 170)
+AuthSubtitle.Font = Enum.Font.Gotham
+AuthSubtitle.TextSize = 12
+AuthSubtitle.BackgroundTransparency = 1
+AuthSubtitle.Parent = AuthHeader
+
+-- Поле ввода ключа
+local InputFrame = Instance.new("Frame")
+InputFrame.Size = UDim2.new(0.85, 0, 0, 45)
+InputFrame.Position = UDim2.new(0.075, 0, 0, 130)
+InputFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+InputFrame.BackgroundTransparency = 0.9
+InputFrame.Parent = AuthFrame
+
+local UICornerInput = Instance.new("UICorner")
+UICornerInput.CornerRadius = UDim.new(0, 12)
+UICornerInput.Parent = InputFrame
+
+local UIStrokeInput = Instance.new("UIStroke")
+UIStrokeInput.Color = Color3.fromRGB(255, 255, 255)
+UIStrokeInput.Transparency = 0.9
+UIStrokeInput.Thickness = 2
+UIStrokeInput.Parent = InputFrame
+
+local KeyIcon = Instance.new("TextLabel")
+KeyIcon.Size = UDim2.new(0, 30, 1, 0)
+KeyIcon.Position = UDim2.new(0, 15, 0, 0)
+KeyIcon.Text = "🔑"
+KeyIcon.TextColor3 = Color3.fromRGB(102, 126, 234)
+KeyIcon.Font = Enum.Font.Gotham
+KeyIcon.TextSize = 16
+KeyIcon.BackgroundTransparency = 1
+KeyIcon.Parent = InputFrame
 
 local KeyBox = Instance.new("TextBox")
-KeyBox.Size = UDim2.new(0.85, 0, 0, 40)
-KeyBox.Position = UDim2.new(0.075, 0, 0.28, 0)
-KeyBox.PlaceholderText = "Введите ключ..."
+KeyBox.Size = UDim2.new(1, -45, 1, 0)
+KeyBox.Position = UDim2.new(0, 45, 0, 0)
+KeyBox.PlaceholderText = "Введите ключ доступа..."
 KeyBox.Text = ""
-KeyBox.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+KeyBox.BackgroundTransparency = 1
 KeyBox.TextColor3 = Color3.new(1, 1, 1)
+KeyBox.PlaceholderColor3 = Color3.fromRGB(187, 187, 187)
 KeyBox.Font = Enum.Font.Gotham
 KeyBox.TextSize = 14
-KeyBox.Parent = AuthFrame
+KeyBox.TextXAlignment = Enum.TextXAlignment.Left
+KeyBox.Parent = InputFrame
 
-local UICornerKey = Instance.new("UICorner")
-UICornerKey.CornerRadius = UDim.new(0, 8)
-UICornerKey.Parent = KeyBox
-
+-- Главная кнопка входа
 local SubmitButton = Instance.new("TextButton")
-SubmitButton.Size = UDim2.new(0.6, 0, 0, 35)
-SubmitButton.Position = UDim2.new(0.2, 0, 0.5, 0)
-SubmitButton.Text = "✓ Войти"
-SubmitButton.BackgroundColor3 = Color3.fromRGB(50, 150, 100)
+SubmitButton.Size = UDim2.new(0.85, 0, 0, 45)
+SubmitButton.Position = UDim2.new(0.075, 0, 0, 190)
+SubmitButton.Text = "🚀 Войти в систему"
+SubmitButton.BackgroundColor3 = Color3.fromRGB(102, 126, 234)
 SubmitButton.TextColor3 = Color3.new(1, 1, 1)
 SubmitButton.Font = Enum.Font.GothamBold
-SubmitButton.TextSize = 15
+SubmitButton.TextSize = 16
 SubmitButton.Parent = AuthFrame
 
 local UICornerSubmit = Instance.new("UICorner")
-UICornerSubmit.CornerRadius = UDim.new(0, 8)
+UICornerSubmit.CornerRadius = UDim.new(0, 12)
 UICornerSubmit.Parent = SubmitButton
 
+local UIGradientSubmit = Instance.new("UIGradient")
+UIGradientSubmit.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(102, 126, 234)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(118, 75, 162))
+}
+UIGradientSubmit.Rotation = 135
+UIGradientSubmit.Parent = SubmitButton
+
+-- Разделитель
+local Divider = Instance.new("TextLabel")
+Divider.Size = UDim2.new(0.85, 0, 0, 20)
+Divider.Position = UDim2.new(0.075, 0, 0, 245)
+Divider.Text = "Нет ключа?"
+Divider.TextColor3 = Color3.fromRGB(136, 136, 136)
+Divider.Font = Enum.Font.Gotham
+Divider.TextSize = 12
+Divider.BackgroundTransparency = 1
+Divider.Parent = AuthFrame
+
+-- Кнопки получения ключа
+local ButtonsFrame = Instance.new("Frame")
+ButtonsFrame.Size = UDim2.new(0.85, 0, 0, 38)
+ButtonsFrame.Position = UDim2.new(0.075, 0, 0, 270)
+ButtonsFrame.BackgroundTransparency = 1
+ButtonsFrame.Parent = AuthFrame
+
 local LinkvertiseButton = Instance.new("TextButton")
-LinkvertiseButton.Size = UDim2.new(0.85, 0, 0, 32)
-LinkvertiseButton.Position = UDim2.new(0.075, 0, 0.7, 0)
-LinkvertiseButton.Text = "🔑 Получить ключ"
-LinkvertiseButton.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+LinkvertiseButton.Size = UDim2.new(0.65, -5, 1, 0)
+LinkvertiseButton.Position = UDim2.new(0, 0, 0, 0)
+LinkvertiseButton.Text = "💎 Получить ключ"
+LinkvertiseButton.BackgroundColor3 = Color3.fromRGB(79, 172, 254)
 LinkvertiseButton.TextColor3 = Color3.new(1, 1, 1)
-LinkvertiseButton.Font = Enum.Font.Gotham
-LinkvertiseButton.TextSize = 13
-LinkvertiseButton.Parent = AuthFrame
+LinkvertiseButton.Font = Enum.Font.GothamBold
+LinkvertiseButton.TextSize = 12
+LinkvertiseButton.Parent = ButtonsFrame
 
 local UICornerLink = Instance.new("UICorner")
-UICornerLink.CornerRadius = UDim.new(0, 8)
+UICornerLink.CornerRadius = UDim.new(0, 10)
 UICornerLink.Parent = LinkvertiseButton
 
+local UIGradientLink = Instance.new("UIGradient")
+UIGradientLink.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(79, 172, 254)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 242, 254))
+}
+UIGradientLink.Rotation = 135
+UIGradientLink.Parent = LinkvertiseButton
+
 local TelegramLink = Instance.new("TextButton")
-TelegramLink.Size = UDim2.new(0.4, 0, 0, 25)
-TelegramLink.Position = UDim2.new(0.3, 0, 0.9, 0)
-TelegramLink.Text = "📱 Telegram"
+TelegramLink.Size = UDim2.new(0.35, -5, 1, 0)
+TelegramLink.Position = UDim2.new(0.65, 5, 0, 0)
+TelegramLink.Text = "💬 Support"
 TelegramLink.BackgroundColor3 = Color3.fromRGB(0, 136, 204)
 TelegramLink.TextColor3 = Color3.new(1, 1, 1)
-TelegramLink.Font = Enum.Font.Gotham
-TelegramLink.TextSize = 11
-TelegramLink.Parent = AuthFrame
+TelegramLink.Font = Enum.Font.GothamBold
+TelegramLink.TextSize = 12
+TelegramLink.Parent = ButtonsFrame
 
 local UICornerTg = Instance.new("UICorner")
-UICornerTg.CornerRadius = UDim.new(0, 6)
+UICornerTg.CornerRadius = UDim.new(0, 10)
 UICornerTg.Parent = TelegramLink
+
+local UIGradientTg = Instance.new("UIGradient")
+UIGradientTg.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 136, 204)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 170, 255))
+}
+UIGradientTg.Rotation = 135
+UIGradientTg.Parent = TelegramLink
 
 local LINKVERTISE_LINK = "Пароль monster6715"
 local TELEGRAM_LINK = "неа"
@@ -202,36 +313,109 @@ local function handleKeySubmission(inputKey)
     end
 end
 
+-- Анимации для кнопок
+local function animateButton(button)
+    local tween = TweenService:Create(button, 
+        TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {Size = UDim2.new(button.Size.X.Scale, button.Size.X.Offset, button.Size.Y.Scale, button.Size.Y.Offset - 2)}
+    )
+    tween:Play()
+    
+    tween.Completed:Connect(function()
+        local tween2 = TweenService:Create(button, 
+            TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {Size = UDim2.new(button.Size.X.Scale, button.Size.X.Offset, button.Size.Y.Scale, button.Size.Y.Offset + 2)}
+        )
+        tween2:Play()
+    end)
+end
+
 LinkvertiseButton.MouseButton1Click:Connect(function()
+    animateButton(LinkvertiseButton)
     copyToClipboard(LINKVERTISE_LINK)
     LinkvertiseButton.Text = "✅ Скопировано!"
     task.wait(1.5)
-    LinkvertiseButton.Text = "🔑 Получить ключ"
+    LinkvertiseButton.Text = "💎 Получить ключ"
 end)
 
 TelegramLink.MouseButton1Click:Connect(function()
+    animateButton(TelegramLink)
     copyToClipboard(TELEGRAM_LINK)
     TelegramLink.Text = "✅ Готово!"
     task.wait(1.5)
-    TelegramLink.Text = "📱 Telegram"
+    TelegramLink.Text = "💬 Support"
 end)
 
 SubmitButton.MouseButton1Click:Connect(function()
+    animateButton(SubmitButton)
     local inputKey = KeyBox.Text
     if handleKeySubmission(inputKey) then
-        AuthFrame:Destroy()
-        loadMainGUI()
+        -- Анимация исчезновения
+        local tween = TweenService:Create(AuthFrame, 
+            TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}
+        )
+        tween:Play()
+        
+        tween.Completed:Connect(function()
+            AuthFrame:Destroy()
+            loadMainGUI()
+        end)
     else
         KeyBox.Text = ""
-        KeyBox.PlaceholderText = "Неверный ключ!"
+        KeyBox.PlaceholderText = "❌ Неверный ключ!"
+        
+        -- Анимация тряски
+        local originalPos = InputFrame.Position
+        for i = 1, 3 do
+            local tween1 = TweenService:Create(InputFrame, 
+                TweenInfo.new(0.05, Enum.EasingStyle.Quad),
+                {Position = UDim2.new(originalPos.X.Scale, originalPos.X.Offset - 5, originalPos.Y.Scale, originalPos.Y.Offset)}
+            )
+            tween1:Play()
+            tween1.Completed:Wait()
+            
+            local tween2 = TweenService:Create(InputFrame, 
+                TweenInfo.new(0.05, Enum.EasingStyle.Quad),
+                {Position = UDim2.new(originalPos.X.Scale, originalPos.X.Offset + 5, originalPos.Y.Scale, originalPos.Y.Offset)}
+            )
+            tween2:Play()
+            tween2.Completed:Wait()
+        end
+        
+        local tween3 = TweenService:Create(InputFrame, 
+            TweenInfo.new(0.05, Enum.EasingStyle.Quad),
+            {Position = originalPos}
+        )
+        tween3:Play()
+        
+        task.wait(2)
+        KeyBox.PlaceholderText = "Введите ключ доступа..."
     end
+end)
+
+-- Фокус для поля ввода
+KeyBox.Focused:Connect(function()
+    local tween = TweenService:Create(UIStrokeInput, 
+        TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+        {Color = Color3.fromRGB(102, 126, 234), Transparency = 0.3}
+    )
+    tween:Play()
+end)
+
+KeyBox.FocusLost:Connect(function()
+    local tween = TweenService:Create(UIStrokeInput, 
+        TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+        {Color = Color3.fromRGB(255, 255, 255), Transparency = 0.9}
+    )
+    tween:Play()
 end)
 
 function loadMainGUI()
     local draggingGG, dragInputGG, dragStartGG, startPosGG
     local draggingMain, dragInputMain, dragStartMain, startPosMain
 
-    -- Компактная кнопка переключения
+    -- Современная кнопка переключения
     local ToggleBtn = Instance.new("TextButton")
     ToggleBtn.Size = UDim2.new(0, 55, 0, 55)
     ToggleBtn.Position = UDim2.new(0, 15, 0.5, -27.5)
@@ -289,7 +473,7 @@ function loadMainGUI()
 
     -- Основное меню - адаптированное под мобильные устройства
     local MainFrame = Instance.new("Frame")
-    MainFrame.Size = UDim2.new(0, 200, 0, 320) -- Уменьшена ширина, увеличена высота
+    MainFrame.Size = UDim2.new(0, 200, 0, 320)
     MainFrame.Position = UDim2.new(0, 80, 0.5, -160)
     MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
     MainFrame.BackgroundTransparency = 0.1
@@ -353,7 +537,7 @@ function loadMainGUI()
 
     local function createButton(name, positionY, emoji)
         local button = Instance.new("TextButton")
-        button.Size = UDim2.new(0.92, 0, 0, 35) -- Увеличена высота кнопок
+        button.Size = UDim2.new(0.92, 0, 0, 35)
         button.Position = UDim2.new(0.04, 0, 0.12 + positionY * 0.12, 0)
         button.Text = emoji .. " " .. name
         button.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
@@ -388,6 +572,16 @@ function loadMainGUI()
 
     local function toggleGUI()
         MainFrame.Visible = not MainFrame.Visible
+        
+        if MainFrame.Visible then
+            -- Анимация появления
+            MainFrame.Size = UDim2.new(0, 0, 0, 0)
+            local tween = TweenService:Create(MainFrame, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+                {Size = UDim2.new(0, 200, 0, 320)}
+            )
+            tween:Play()
+        end
     end
 
     ToggleBtn.MouseButton1Click:Connect(toggleGUI)
@@ -457,6 +651,22 @@ function loadMainGUI()
     flyBackwardCorner.CornerRadius = UDim.new(0, 8)
     flyBackwardCorner.Parent = FlyBackwardBtn
 
+    local function animateButtonPress(button)
+        local tween = TweenService:Create(button, 
+            TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(50, 150, 100)}
+        )
+        tween:Play()
+    end
+
+    local function animateButtonRelease(button)
+        local tween = TweenService:Create(button, 
+            TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+        )
+        tween:Play()
+    end
+
     local function disableAllFunctions()
         if noclipActive then 
             noclipActive = false
@@ -504,7 +714,20 @@ function loadMainGUI()
         
         noclipActive = not noclipActive
         NoclipBtn.Text = "👻 NoClip: " .. (noclipActive and "ON" or "OFF")
-        NoclipBtn.BackgroundColor3 = noclipActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
+        
+        if noclipActive then
+            local tween = TweenService:Create(NoclipBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(50, 150, 100)}
+            )
+            tween:Play()
+        else
+            local tween = TweenService:Create(NoclipBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
+        end
         
         if noclipConnection then
             noclipConnection:Disconnect()
@@ -527,7 +750,20 @@ function loadMainGUI()
     local function toggleESP()
         espActive = not espActive
         ESPBtn.Text = "👁️ ESP: " .. (espActive and "ON" or "OFF")
-        ESPBtn.BackgroundColor3 = espActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
+        
+        if espActive then
+            local tween = TweenService:Create(ESPBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(50, 150, 100)}
+            )
+            tween:Play()
+        else
+            local tween = TweenService:Create(ESPBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
+        end
         
         for _, espData in pairs(espHandles) do
             if espData.highlight then espData.highlight:Destroy() end
@@ -588,8 +824,30 @@ function loadMainGUI()
         
         flyActive = not flyActive
         FlyBtn.Text = "✈️ Fly: " .. (flyActive and "ON" or "OFF")
-        FlyBtn.BackgroundColor3 = flyActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
-        FlyGui.Visible = flyActive
+        
+        if flyActive then
+            local tween = TweenService:Create(FlyBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(50, 150, 100)}
+            )
+            tween:Play()
+            
+            FlyGui.Visible = true
+            FlyGui.Size = UDim2.new(0, 0, 0, 0)
+            local flyTween = TweenService:Create(FlyGui, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+                {Size = UDim2.new(0, 120, 0, 80)}
+            )
+            flyTween:Play()
+        else
+            local tween = TweenService:Create(FlyBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
+            
+            FlyGui.Visible = false
+        end
         
         if flyConnection then
             flyConnection:Disconnect()
@@ -617,18 +875,22 @@ function loadMainGUI()
             
             FlyForwardBtn.MouseButton1Down:Connect(function()
                 forwardActive = true
+                animateButtonPress(FlyForwardBtn)
             end)
             
             FlyForwardBtn.MouseButton1Up:Connect(function()
                 forwardActive = false
+                animateButtonRelease(FlyForwardBtn)
             end)
             
             FlyBackwardBtn.MouseButton1Down:Connect(function()
                 backwardActive = true
+                animateButtonPress(FlyBackwardBtn)
             end)
             
             FlyBackwardBtn.MouseButton1Up:Connect(function()
                 backwardActive = false
+                animateButtonRelease(FlyBackwardBtn)
             end)
             
             flyConnection = RunService.Heartbeat:Connect(function()
@@ -688,8 +950,20 @@ function loadMainGUI()
         
         savedBasePosition = humanoidRootPart.Position + Vector3.new(0, 2, 0)
         SetBaseBtn.Text = "🏠 Base Saved ✓"
+        
+        local tween = TweenService:Create(SetBaseBtn, 
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+            {BackgroundColor3 = Color3.fromRGB(50, 150, 100)}
+        )
+        tween:Play()
+        
         task.delay(1, function()
             SetBaseBtn.Text = "🏠 Set Base"
+            local tween2 = TweenService:Create(SetBaseBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween2:Play()
         end)
     end
 
@@ -719,6 +993,12 @@ function loadMainGUI()
         end
         
         FloatBtn.Text = "🎈 Floating..."
+        local tween = TweenService:Create(FloatBtn, 
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+            {BackgroundColor3 = Color3.fromRGB(255, 165, 0)}
+        )
+        tween:Play()
+        
         local startTime = tick()
         local speed = 40
         local minDistanceToStop = 3
@@ -732,6 +1012,11 @@ function loadMainGUI()
             if not floatActive or not humanoidRootPart or not humanoid then
                 floatConnection:Disconnect()
                 FloatBtn.Text = "🎈 Float to Base"
+                local tween2 = TweenService:Create(FloatBtn, 
+                    TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                    {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+                )
+                tween2:Play()
                 return
             end
             
@@ -746,6 +1031,11 @@ function loadMainGUI()
                 humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
                 floatConnection:Disconnect()
                 FloatBtn.Text = "🎈 Float to Base"
+                local tween2 = TweenService:Create(FloatBtn, 
+                    TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                    {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+                )
+                tween2:Play()
                 return
             end
             
@@ -754,6 +1044,11 @@ function loadMainGUI()
                 humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
                 floatConnection:Disconnect()
                 FloatBtn.Text = "🎈 Float to Base"
+                local tween2 = TweenService:Create(FloatBtn, 
+                    TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                    {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+                )
+                tween2:Play()
                 return
             end
             
@@ -771,7 +1066,20 @@ function loadMainGUI()
         
         autoStealActive = not autoStealActive
         AutoStealBtn.Text = "💰 Auto Steal: " .. (autoStealActive and "ON" or "OFF")
-        AutoStealBtn.BackgroundColor3 = autoStealActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
+        
+        if autoStealActive then
+            local tween = TweenService:Create(AutoStealBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(50, 150, 100)}
+            )
+            tween:Play()
+        else
+            local tween = TweenService:Create(AutoStealBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
+        end
         
         if autoStealConnection then
             autoStealConnection:Disconnect()
@@ -786,7 +1094,11 @@ function loadMainGUI()
             if not character then 
                 autoStealActive = false
                 AutoStealBtn.Text = "💰 Auto Steal: OFF"
-                AutoStealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+                local tween = TweenService:Create(AutoStealBtn, 
+                    TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                    {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+                )
+                tween:Play()
                 autoStealCooldown = false
                 return
             end
@@ -795,7 +1107,11 @@ function loadMainGUI()
             if not humanoidRootPart then 
                 autoStealActive = false
                 AutoStealBtn.Text = "💰 Auto Steal: OFF"
-                AutoStealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+                local tween = TweenService:Create(AutoStealBtn, 
+                    TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                    {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+                )
+                tween:Play()
                 autoStealCooldown = false
                 return
             end
@@ -830,7 +1146,11 @@ function loadMainGUI()
             savedBasePosition = originalBase
             autoStealActive = false
             AutoStealBtn.Text = "💰 Auto Steal: OFF"
-            AutoStealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+            local tween = TweenService:Create(AutoStealBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
             autoStealCooldown = false
         else
             if autoStealTimer then
@@ -846,7 +1166,20 @@ function loadMainGUI()
         
         boostSpeedActive = not boostSpeedActive
         BoostSpeedBtn.Text = "⚡ Speed: " .. (boostSpeedActive and "ON" or "OFF")
-        BoostSpeedBtn.BackgroundColor3 = boostSpeedActive and Color3.fromRGB(50, 150, 100) or Color3.fromRGB(40, 40, 55)
+        
+        if boostSpeedActive then
+            local tween = TweenService:Create(BoostSpeedBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(50, 150, 100)}
+            )
+            tween:Play()
+        else
+            local tween = TweenService:Create(BoostSpeedBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
+        end
         
         if boostSpeedConnection then
             boostSpeedConnection:Disconnect()
@@ -894,6 +1227,7 @@ function loadMainGUI()
         end
     end
 
+    -- Обработчики событий персонажа
     player.CharacterAdded:Connect(function(character)
         for _, part in pairs(character:GetDescendants()) do
             if part:IsA("BasePart") then
@@ -906,6 +1240,7 @@ function loadMainGUI()
             end
         end
         
+        -- Сброс всех функций при респауне
         if noclipActive then
             if noclipConnection then
                 noclipConnection:Disconnect()
@@ -913,7 +1248,11 @@ function loadMainGUI()
             end
             noclipActive = false
             NoclipBtn.Text = "👻 NoClip: OFF"
-            NoclipBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+            local tween = TweenService:Create(NoclipBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
         end
         
         if espActive then
@@ -934,7 +1273,11 @@ function loadMainGUI()
             end
             flyActive = false
             FlyBtn.Text = "✈️ Fly: OFF"
-            FlyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+            local tween = TweenService:Create(FlyBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
             FlyGui.Visible = false
         end
         
@@ -954,7 +1297,11 @@ function loadMainGUI()
             end
             autoStealActive = false
             AutoStealBtn.Text = "💰 Auto Steal: OFF"
-            AutoStealBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+            local tween = TweenService:Create(AutoStealBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
             if autoStealTimer then
                 task.cancel(autoStealTimer)
                 autoStealTimer = nil
@@ -969,15 +1316,47 @@ function loadMainGUI()
             end
             boostSpeedActive = false
             BoostSpeedBtn.Text = "⚡ Speed: OFF"
-            BoostSpeedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+            local tween = TweenService:Create(BoostSpeedBtn, 
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {BackgroundColor3 = Color3.fromRGB(40, 40, 55)}
+            )
+            tween:Play()
         end
     end)
 
-    NoclipBtn.MouseButton1Click:Connect(toggleNoclip)
-    ESPBtn.MouseButton1Click:Connect(toggleESP)
-    FlyBtn.MouseButton1Click:Connect(toggleFly)
-    SetBaseBtn.MouseButton1Click:Connect(setBase)
-    FloatBtn.MouseButton1Click:Connect(floatToBase)
-    AutoStealBtn.MouseButton1Click:Connect(toggleAutoSteal)
-    BoostSpeedBtn.MouseButton1Click:Connect(toggleBoostSpeed)
+    -- Подключение функций к кнопкам
+    NoclipBtn.MouseButton1Click:Connect(function()
+        animateButton(NoclipBtn)
+        toggleNoclip()
+    end)
+    
+    ESPBtn.MouseButton1Click:Connect(function()
+        animateButton(ESPBtn)
+        toggleESP()
+    end)
+    
+    FlyBtn.MouseButton1Click:Connect(function()
+        animateButton(FlyBtn)
+        toggleFly()
+    end)
+    
+    SetBaseBtn.MouseButton1Click:Connect(function()
+        animateButton(SetBaseBtn)
+        setBase()
+    end)
+    
+    FloatBtn.MouseButton1Click:Connect(function()
+        animateButton(FloatBtn)
+        floatToBase()
+    end)
+    
+    AutoStealBtn.MouseButton1Click:Connect(function()
+        animateButton(AutoStealBtn)
+        toggleAutoSteal()
+    end)
+    
+    BoostSpeedBtn.MouseButton1Click:Connect(function()
+        animateButton(BoostSpeedBtn)
+        toggleBoostSpeed()
+    end)
 end
