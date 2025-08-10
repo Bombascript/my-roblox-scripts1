@@ -1,8 +1,4 @@
-if not isVisible then
-            MainFrame.Size = UDim2.new(0, 0, 0, 0)
-            local showTween = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 240, 0, 320)})
-            showTween:Play()
-        endlocal RunService = game:GetService("RunService")
+local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
@@ -94,8 +90,8 @@ ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 -- Modern Auth Frame
 local AuthFrame = Instance.new("Frame")
-AuthFrame.Size = UDim2.new(0, 280, 0, 350)
-AuthFrame.Position = UDim2.new(0.5, -140, 0.5, -175)
+AuthFrame.Size = UDim2.new(0, 350, 0, 450)
+AuthFrame.Position = UDim2.new(0.5, -175, 0.5, -225)
 AuthFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 AuthFrame.BorderSizePixel = 0
 AuthFrame.Parent = ScreenGui
@@ -125,31 +121,31 @@ Glow.Size = UDim2.new(1, 100, 1, 100)
 Glow.Parent = AuthFrame
 
 local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Size = UDim2.new(1, -30, 0, 45)
-TitleLabel.Position = UDim2.new(0, 15, 0, 20)
-TitleLabel.Text = "🔐 АВТОРИЗАЦИЯ"
+TitleLabel.Size = UDim2.new(1, -40, 0, 60)
+TitleLabel.Position = UDim2.new(0, 20, 0, 30)
+TitleLabel.Text = "🔐 ТРЕБУЕТСЯ АВТОРИЗАЦИЯ"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.Font = Enum.Font.GothamBold
-TitleLabel.TextSize = 18
+TitleLabel.TextSize = 22
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Center
 TitleLabel.Parent = AuthFrame
 
 local SubtitleLabel = Instance.new("TextLabel")
-SubtitleLabel.Size = UDim2.new(1, -30, 0, 25)
-SubtitleLabel.Position = UDim2.new(0, 15, 0, 60)
-SubtitleLabel.Text = "Введите ключ для доступа"
+SubtitleLabel.Size = UDim2.new(1, -40, 0, 30)
+SubtitleLabel.Position = UDim2.new(0, 20, 0, 85)
+SubtitleLabel.Text = "Введите ключ для доступа к функциям"
 SubtitleLabel.TextColor3 = Color3.fromRGB(160, 160, 160)
 SubtitleLabel.Font = Enum.Font.Gotham
-SubtitleLabel.TextSize = 12
+SubtitleLabel.TextSize = 14
 SubtitleLabel.BackgroundTransparency = 1
 SubtitleLabel.TextXAlignment = Enum.TextXAlignment.Center
 SubtitleLabel.Parent = AuthFrame
 
 -- Modern Key Input
 local KeyContainer = Instance.new("Frame")
-KeyContainer.Size = UDim2.new(1, -30, 0, 45)
-KeyContainer.Position = UDim2.new(0, 15, 0, 100)
+KeyContainer.Size = UDim2.new(1, -40, 0, 55)
+KeyContainer.Position = UDim2.new(0, 20, 0, 140)
 KeyContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
 KeyContainer.BorderSizePixel = 0
 KeyContainer.Parent = AuthFrame
@@ -159,38 +155,38 @@ UICornerKey.CornerRadius = UDim.new(0, 10)
 UICornerKey.Parent = KeyContainer
 
 local KeyIcon = Instance.new("TextLabel")
-KeyIcon.Size = UDim2.new(0, 35, 1, 0)
+KeyIcon.Size = UDim2.new(0, 40, 1, 0)
 KeyIcon.Position = UDim2.new(0, 0, 0, 0)
 KeyIcon.Text = "🔑"
 KeyIcon.TextColor3 = Color3.fromRGB(100, 150, 255)
 KeyIcon.Font = Enum.Font.Gotham
-KeyIcon.TextSize = 16
+KeyIcon.TextSize = 18
 KeyIcon.BackgroundTransparency = 1
 KeyIcon.TextXAlignment = Enum.TextXAlignment.Center
 KeyIcon.Parent = KeyContainer
 
 local KeyBox = Instance.new("TextBox")
-KeyBox.Size = UDim2.new(1, -40, 1, -8)
-KeyBox.Position = UDim2.new(0, 38, 0, 4)
-KeyBox.PlaceholderText = "Введите ключ..."
+KeyBox.Size = UDim2.new(1, -50, 1, -10)
+KeyBox.Position = UDim2.new(0, 45, 0, 5)
+KeyBox.PlaceholderText = "Введите ваш ключ..."
 KeyBox.Text = ""
 KeyBox.BackgroundTransparency = 1
 KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 KeyBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
 KeyBox.Font = Enum.Font.Gotham
-KeyBox.TextSize = 14
+KeyBox.TextSize = 16
 KeyBox.TextXAlignment = Enum.TextXAlignment.Left
 KeyBox.Parent = KeyContainer
 
 -- Modern Submit Button
 local SubmitButton = Instance.new("TextButton")
-SubmitButton.Size = UDim2.new(1, -30, 0, 40)
-SubmitButton.Position = UDim2.new(0, 15, 0, 165)
+SubmitButton.Size = UDim2.new(1, -40, 0, 50)
+SubmitButton.Position = UDim2.new(0, 20, 0, 220)
 SubmitButton.Text = "🚀 АКТИВИРОВАТЬ"
 SubmitButton.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
 SubmitButton.TextColor3 = Color3.new(1, 1, 1)
 SubmitButton.Font = Enum.Font.GothamBold
-SubmitButton.TextSize = 14
+SubmitButton.TextSize = 16
 SubmitButton.BorderSizePixel = 0
 SubmitButton.Parent = AuthFrame
 
@@ -200,13 +196,13 @@ UICornerSubmit.Parent = SubmitButton
 
 -- Modern Linkvertise Button
 local LinkvertiseButton = Instance.new("TextButton")
-LinkvertiseButton.Size = UDim2.new(1, -30, 0, 40)
-LinkvertiseButton.Position = UDim2.new(0, 15, 0, 220)
-LinkvertiseButton.Text = "🔗 ПОЛУЧИТЬ КЛЮЧ"
+LinkvertiseButton.Size = UDim2.new(1, -40, 0, 50)
+LinkvertiseButton.Position = UDim2.new(0, 20, 0, 290)
+LinkvertiseButton.Text = "🔗 ПОЛУЧИТЬ КЛЮЧ (Linkvertise)"
 LinkvertiseButton.BackgroundColor3 = Color3.fromRGB(0, 180, 120)
 LinkvertiseButton.TextColor3 = Color3.new(1, 1, 1)
 LinkvertiseButton.Font = Enum.Font.GothamBold
-LinkvertiseButton.TextSize = 12
+LinkvertiseButton.TextSize = 14
 LinkvertiseButton.BorderSizePixel = 0
 LinkvertiseButton.Parent = AuthFrame
 
@@ -216,13 +212,13 @@ UICornerLink.Parent = LinkvertiseButton
 
 -- Modern Telegram Button
 local TelegramLink = Instance.new("TextButton")
-TelegramLink.Size = UDim2.new(1, -30, 0, 35)
-TelegramLink.Position = UDim2.new(0, 15, 0, 275)
+TelegramLink.Size = UDim2.new(1, -40, 0, 45)
+TelegramLink.Position = UDim2.new(0, 20, 0, 360)
 TelegramLink.Text = "💬 TELEGRAM"
 TelegramLink.BackgroundColor3 = Color3.fromRGB(0, 136, 204)
 TelegramLink.TextColor3 = Color3.new(1, 1, 1)
 TelegramLink.Font = Enum.Font.GothamBold
-TelegramLink.TextSize = 12
+TelegramLink.TextSize = 14
 TelegramLink.BorderSizePixel = 0
 TelegramLink.Parent = AuthFrame
 
@@ -284,7 +280,7 @@ LinkvertiseButton.MouseButton1Click:Connect(function()
     copyToClipboard(LINKVERTISE_LINK)
     LinkvertiseButton.Text = "✅ ССЫЛКА СКОПИРОВАНА!"
     task.wait(1.5)
-    LinkvertiseButton.Text = "🔗 ПОЛУЧИТЬ КЛЮЧ"
+    LinkvertiseButton.Text = "🔗 ПОЛУЧИТЬ КЛЮЧ (Linkvertise)"
 end)
 
 TelegramLink.MouseButton1Click:Connect(function()
@@ -299,7 +295,7 @@ SubmitButton.MouseButton1Click:Connect(function()
     animateButton(SubmitButton)
     local inputKey = KeyBox.Text
     if handleKeySubmission(inputKey) then
-        local fadeOut = TweenService:Create(AuthFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 0, 0, 0)})
+        local fadeOut = TweenService:Create(AuthFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1})
         fadeOut:Play()
         fadeOut.Completed:Connect(function()
             AuthFrame:Destroy()
@@ -308,14 +304,14 @@ SubmitButton.MouseButton1Click:Connect(function()
     else
         KeyBox.Text = ""
         KeyBox.PlaceholderText = "❌ Неверный ключ!"
-        local shake = TweenService:Create(KeyContainer, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 25, 0, 100)})
-        local shakeBack = TweenService:Create(KeyContainer, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 15, 0, 100)})
+        local shake = TweenService:Create(KeyContainer, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 30, 0, 140)})
+        local shakeBack = TweenService:Create(KeyContainer, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 20, 0, 140)})
         shake:Play()
         shake.Completed:Connect(function()
             shakeBack:Play()
         end)
         task.wait(2)
-        KeyBox.PlaceholderText = "Введите ключ..."
+        KeyBox.PlaceholderText = "Введите ваш ключ..."
     end
 end)
 
@@ -325,19 +321,19 @@ function loadMainGUI()
 
     -- Modern Toggle Button
     local ToggleBtn = Instance.new("TextButton")
-    ToggleBtn.Size = UDim2.new(0, 55, 0, 55)
-    ToggleBtn.Position = UDim2.new(0, 10, 0.5, -27.5)
+    ToggleBtn.Size = UDim2.new(0, 70, 0, 70)
+    ToggleBtn.Position = UDim2.new(0, 15, 0.5, -35)
     ToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     ToggleBtn.Text = "⚡"
     ToggleBtn.Font = Enum.Font.GothamBold
-    ToggleBtn.TextSize = 24
+    ToggleBtn.TextSize = 28
     ToggleBtn.ZIndex = 2
     ToggleBtn.BorderSizePixel = 0
     ToggleBtn.Parent = ScreenGui
 
     local UICornerGG = Instance.new("UICorner")
-    UICornerGG.CornerRadius = UDim.new(0, 15)
+    UICornerGG.CornerRadius = UDim.new(0, 20)
     UICornerGG.Parent = ToggleBtn
 
     local UIGradientGG = Instance.new("UIGradient")
@@ -350,15 +346,15 @@ function loadMainGUI()
 
     -- Shadow effect for toggle button
     local Shadow = Instance.new("Frame")
-    Shadow.Size = UDim2.new(1, 8, 1, 8)
-    Shadow.Position = UDim2.new(0, -4, 0, -4)
+    Shadow.Size = UDim2.new(1, 10, 1, 10)
+    Shadow.Position = UDim2.new(0, -5, 0, -5)
     Shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Shadow.BackgroundTransparency = 0.7
     Shadow.ZIndex = 1
     Shadow.Parent = ToggleBtn
 
     local UIShadowCorner = Instance.new("UICorner")
-    UIShadowCorner.CornerRadius = UDim.new(0, 19)
+    UIShadowCorner.CornerRadius = UDim.new(0, 25)
     UIShadowCorner.Parent = Shadow
 
     local function updateGGInput(input)
@@ -394,8 +390,8 @@ function loadMainGUI()
 
     -- Modern Main Frame
     local MainFrame = Instance.new("Frame")
-    MainFrame.Size = UDim2.new(0, 240, 0, 320)
-    MainFrame.Position = UDim2.new(0, 75, 0.5, -160)
+    MainFrame.Size = UDim2.new(0, 280, 0, 400)
+    MainFrame.Position = UDim2.new(0, 100, 0.5, -200)
     MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
     MainFrame.BackgroundTransparency = 0.1
     MainFrame.Visible = false
@@ -416,47 +412,31 @@ function loadMainGUI()
 
     -- Header
     local Header = Instance.new("Frame")
-    Header.Size = UDim2.new(1, 0, 0, 40)
+    Header.Size = UDim2.new(1, 0, 0, 50)
     Header.Position = UDim2.new(0, 0, 0, 0)
     Header.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
     Header.BorderSizePixel = 0
     Header.Parent = MainFrame
 
     local UICornerHeader = Instance.new("UICorner")
-    UICornerHeader.CornerRadius = UDim.new(0, 12)
+    UICornerHeader.CornerRadius = UDim.new(0, 15)
     UICornerHeader.Parent = Header
 
     local HeaderTitle = Instance.new("TextLabel")
-    HeaderTitle.Size = UDim2.new(1, -60, 1, 0)
+    HeaderTitle.Size = UDim2.new(1, -20, 1, 0)
     HeaderTitle.Position = UDim2.new(0, 10, 0, 0)
-    HeaderTitle.Text = "🎯 HACK MENU"
+    HeaderTitle.Text = "🎯 MODERN HACK MENU"
     HeaderTitle.TextColor3 = Color3.new(1, 1, 1)
     HeaderTitle.Font = Enum.Font.GothamBold
-    HeaderTitle.TextSize = 14
+    HeaderTitle.TextSize = 18
     HeaderTitle.BackgroundTransparency = 1
     HeaderTitle.TextXAlignment = Enum.TextXAlignment.Left
     HeaderTitle.Parent = Header
 
-    -- Close Button
-    local CloseButton = Instance.new("TextButton")
-    CloseButton.Size = UDim2.new(0, 30, 0, 30)
-    CloseButton.Position = UDim2.new(1, -35, 0, 5)
-    CloseButton.Text = "✕"
-    CloseButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-    CloseButton.TextColor3 = Color3.new(1, 1, 1)
-    CloseButton.Font = Enum.Font.GothamBold
-    CloseButton.TextSize = 16
-    CloseButton.BorderSizePixel = 0
-    CloseButton.Parent = Header
-
-    local UICornerClose = Instance.new("UICorner")
-    UICornerClose.CornerRadius = UDim.new(0, 8)
-    UICornerClose.Parent = CloseButton
-
     -- Fix header corners
     local HeaderFix = Instance.new("Frame")
-    HeaderFix.Size = UDim2.new(1, 0, 0, 12)
-    HeaderFix.Position = UDim2.new(0, 0, 1, -12)
+    HeaderFix.Size = UDim2.new(1, 0, 0, 15)
+    HeaderFix.Position = UDim2.new(0, 0, 1, -15)
     HeaderFix.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
     HeaderFix.BorderSizePixel = 0
     HeaderFix.Parent = Header
@@ -495,14 +475,14 @@ function loadMainGUI()
     -- Modern button creation function
     local function createModernButton(name, icon, positionY, isSpecial)
         local buttonContainer = Instance.new("Frame")
-        buttonContainer.Size = UDim2.new(1, -16, 0, 35)
-        buttonContainer.Position = UDim2.new(0, 8, 0, 50 + positionY * 40)
+        buttonContainer.Size = UDim2.new(1, -20, 0, 45)
+        buttonContainer.Position = UDim2.new(0, 10, 0, 65 + positionY * 52)
         buttonContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
         buttonContainer.BorderSizePixel = 0
         buttonContainer.Parent = MainFrame
         
         local uiCornerContainer = Instance.new("UICorner")
-        uiCornerContainer.CornerRadius = UDim.new(0, 8)
+        uiCornerContainer.CornerRadius = UDim.new(0, 12)
         uiCornerContainer.Parent = buttonContainer
 
         local button = Instance.new("TextButton")
@@ -512,24 +492,24 @@ function loadMainGUI()
         button.BackgroundTransparency = 1
         button.TextColor3 = Color3.fromRGB(255, 255, 255)
         button.Font = Enum.Font.GothamBold
-        button.TextSize = 12
+        button.TextSize = 14
         button.TextXAlignment = Enum.TextXAlignment.Left
         button.Parent = buttonContainer
         
         local textPadding = Instance.new("UIPadding")
-        textPadding.PaddingLeft = UDim.new(0, 10)
+        textPadding.PaddingLeft = UDim.new(0, 15)
         textPadding.Parent = button
 
         -- Status indicator
         local statusIndicator = Instance.new("Frame")
-        statusIndicator.Size = UDim2.new(0, 6, 0, 6)
-        statusIndicator.Position = UDim2.new(1, -14, 0.5, -3)
+        statusIndicator.Size = UDim2.new(0, 8, 0, 8)
+        statusIndicator.Position = UDim2.new(1, -20, 0.5, -4)
         statusIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
         statusIndicator.BorderSizePixel = 0
         statusIndicator.Parent = buttonContainer
 
         local statusCorner = Instance.new("UICorner")
-        statusCorner.CornerRadius = UDim.new(0, 3)
+        statusCorner.CornerRadius = UDim.new(0, 4)
         statusCorner.Parent = statusIndicator
 
         -- Hover effects
@@ -560,16 +540,9 @@ function loadMainGUI()
         
         if not isVisible then
             MainFrame.Size = UDim2.new(0, 0, 0, 0)
-            local showTween = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 240, 0, 320)})
+            local showTween = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 280, 0, 400)})
             showTween:Play()
         end
-    end
-
-    -- Close button functionality
-    CloseButton.MouseButton1Click:Connect(function()
-        animateButton(CloseButton)
-        ScreenGui:Destroy()
-    end)
     end
 
     ToggleBtn.MouseButton1Click:Connect(function()
@@ -597,8 +570,8 @@ function loadMainGUI()
 
     -- Modern Fly GUI
     local FlyGui = Instance.new("Frame")
-    FlyGui.Size = UDim2.new(0, 120, 0, 90)
-    FlyGui.Position = UDim2.new(0, 75, 1, -110)
+    FlyGui.Size = UDim2.new(0, 140, 0, 120)
+    FlyGui.Position = UDim2.new(0, 100, 1, -140)
     FlyGui.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
     FlyGui.BackgroundTransparency = 0.1
     FlyGui.Visible = false
@@ -606,7 +579,7 @@ function loadMainGUI()
     FlyGui.Parent = ScreenGui
 
     local UICornerFly = Instance.new("UICorner")
-    UICornerFly.CornerRadius = UDim.new(0, 12)
+    UICornerFly.CornerRadius = UDim.new(0, 15)
     UICornerFly.Parent = FlyGui
 
     local UIGradientFly = Instance.new("UIGradient")
@@ -618,33 +591,33 @@ function loadMainGUI()
     UIGradientFly.Parent = FlyGui
 
     local FlyForwardBtn = Instance.new("TextButton")
-    FlyForwardBtn.Size = UDim2.new(0.7, 0, 0.35, 0)
-    FlyForwardBtn.Position = UDim2.new(0.15, 0, 0.1, 0)
+    FlyForwardBtn.Size = UDim2.new(0.6, 0, 0.35, 0)
+    FlyForwardBtn.Position = UDim2.new(0.2, 0, 0.1, 0)
     FlyForwardBtn.Text = "⬆️ ВПЕРЕД"
     FlyForwardBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     FlyForwardBtn.TextColor3 = Color3.new(1, 1, 1)
     FlyForwardBtn.Font = Enum.Font.GothamBold
-    FlyForwardBtn.TextSize = 10
+    FlyForwardBtn.TextSize = 12
     FlyForwardBtn.BorderSizePixel = 0
     FlyForwardBtn.Parent = FlyGui
 
     local UICornerFlyForward = Instance.new("UICorner")
-    UICornerFlyForward.CornerRadius = UDim.new(0, 6)
+    UICornerFlyForward.CornerRadius = UDim.new(0, 8)
     UICornerFlyForward.Parent = FlyForwardBtn
 
     local FlyBackwardBtn = Instance.new("TextButton")
-    FlyBackwardBtn.Size = UDim2.new(0.7, 0, 0.35, 0)
-    FlyBackwardBtn.Position = UDim2.new(0.15, 0, 0.55, 0)
+    FlyBackwardBtn.Size = UDim2.new(0.6, 0, 0.35, 0)
+    FlyBackwardBtn.Position = UDim2.new(0.2, 0, 0.55, 0)
     FlyBackwardBtn.Text = "⬇️ НАЗАД"
     FlyBackwardBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     FlyBackwardBtn.TextColor3 = Color3.new(1, 1, 1)
     FlyBackwardBtn.Font = Enum.Font.GothamBold
-    FlyBackwardBtn.TextSize = 10
+    FlyBackwardBtn.TextSize = 12
     FlyBackwardBtn.BorderSizePixel = 0
     FlyBackwardBtn.Parent = FlyGui
 
     local UICornerFlyBackward = Instance.new("UICorner")
-    UICornerFlyBackward.CornerRadius = UDim.new(0, 6)
+    UICornerFlyBackward.CornerRadius = UDim.new(0, 8)
     UICornerFlyBackward.Parent = FlyBackwardBtn
 
     local function updateButtonState(button, indicator, isActive, activeText, inactiveText)
