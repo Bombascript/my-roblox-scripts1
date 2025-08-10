@@ -68,7 +68,7 @@ end
 
 local function copyToClipboard(text)
     pcall(function()
-        createNotification("Ссылка скопирована", "Теперь вы можете вставить её в браузере", 2)
+        createNotification("Ссылка скопирован", "Теперь вы можете вставить её в браузере", 2)
         setclipboard(text)
     end)
 end
