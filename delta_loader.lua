@@ -101,7 +101,7 @@ TitleLabel.Parent = AuthFrame
 local KeyBox = Instance.new("TextBox")
 KeyBox.Size = UDim2.new(0.8, 0, 0, 40)
 KeyBox.Position = UDim2.new(0.1, 0, 0.3, 0)
-KeyBox.PlaceholderText = "Введите ключ доступа"
+KeyBox.PlaceholderText = "Ключ ввел быстро"
 KeyBox.Text = ""
 KeyBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 KeyBox.TextColor3 = Color3.new(1, 1, 1)
@@ -122,7 +122,7 @@ SubmitButton.Parent = AuthFrame
 local LinkvertiseButton = Instance.new("TextButton")
 LinkvertiseButton.Size = UDim2.new(0.8, 0, 0, 35)
 LinkvertiseButton.Position = UDim2.new(0.1, 0, 0.8, 0)
-LinkvertiseButton.Text = "Получить ключ (Linkvertise)"
+LinkvertiseButton.Text = "Ключ на (Linkvertise)"
 LinkvertiseButton.BackgroundColor3 = Color3.fromRGB(0, 180, 120)
 LinkvertiseButton.TextColor3 = Color3.new(1, 1, 1)
 LinkvertiseButton.Font = Enum.Font.Gotham
@@ -139,9 +139,9 @@ TelegramLink.Font = Enum.Font.Gotham
 TelegramLink.TextSize = 12
 TelegramLink.Parent = AuthFrame
 
-local LINKVERTISE_LINK = "https://link-center.net/1368071/1swLRhKVHuFF"
-local TELEGRAM_LINK = "https://t.me/ggscriptsezz"
-local CORRECT_KEY = "10ko57cl69"
+local LINKVERTISE_LINK = "Пароль monster6715"
+local TELEGRAM_LINK = "неа"
+local CORRECT_KEY = "monster6715"
 
 local function checkKey(inputKey)
     return inputKey == CORRECT_KEY
@@ -149,23 +149,23 @@ end
 
 local random = math.random(1,6)
 if random == 1 then 
-    CORRECT_KEY = "Ow930kwqm"
-    LINKVERTISE_LINK = "https://link-center.net/1368071/1swLRhKVHuFF"
+    CORRECT_KEY = "monster6715"
+    LINKVERTISE_LINK = "Пароль monster6715"
 elseif random == 2 then
-    CORRECT_KEY = "04JLvb3"
-    LINKVERTISE_LINK = "https://link-center.net/1368071/rlpudRaLTbvw"
+    CORRECT_KEY = "monster6715"
+    LINKVERTISE_LINK = "Пароль monster6715"
 elseif random == 3 then
-    CORRECT_KEY = "H8ka9lp02"
-    LINKVERTISE_LINK = "https://link-center.net/1368071/2me4DIc4wwOT"
+    CORRECT_KEY = "monster6715"
+    LINKVERTISE_LINK = "Пароль monster6715"
 elseif random == 4 then
-    CORRECT_KEY = "Eu52nd6419"
-    LINKVERTISE_LINK = "https://link-hub.net/1368071/piDNay87c6xc"
+    CORRECT_KEY = "monster6715"
+    LINKVERTISE_LINK = "Пароль monster6715"
 elseif random == 5 then
-    CORRECT_KEY = "He338jel0l"
-    LINKVERTISE_LINK = "https://direct-link.net/1368071/JVYfcPMRm5wY"
+    CORRECT_KEY = "monster6715"
+    LINKVERTISE_LINK = "Пароль monster6715"
 elseif random == 6 then
-    CORRECT_KEY = "Lza89mfnw"
-    LINKVERTISE_LINK = "https://link-target.net/1368071/QYNh8latAtKH"
+    CORRECT_KEY = "monster6715"
+    LINKVERTISE_LINK = "Пароль monster6715"
 end
 
 local function handleKeySubmission(inputKey)
@@ -197,7 +197,7 @@ SubmitButton.MouseButton1Click:Connect(function()
         loadMainGUI()
     else
         KeyBox.Text = ""
-        KeyBox.PlaceholderText = "Неверный ключ! Попробуйте снова"
+        KeyBox.PlaceholderText = "Пидар"
     end
 end)
 
@@ -312,13 +312,13 @@ function loadMainGUI()
         return button
     end
 
-    local NoclipBtn = createButton("NoClip: OFF", 0)
-    local ESPBtn = createButton("ESP: OFF", 1)
-    local FlyBtn = createButton("Fly: OFF", 2)
-    local SetBaseBtn = createButton("Set Base Position", 3)
-    local FloatBtn = createButton("Float to Base", 4)
-    local AutoStealBtn = createButton("Auto Steal: OFF", 5)
-    local BoostSpeedBtn = createButton("Boost Speed: OFF", 6)
+    local NoclipBtn = createButton("Ноуклип нерабочий: OFF", 0)
+    local ESPBtn = createButton("Есп: OFF", 1)
+    local FlyBtn = createButton("Флай Нерабочий: OFF", 2)
+    local SetBaseBtn = createButton("Позиция Базы", 3)
+    local FloatBtn = createButton("Тп на базу хз", 4)
+    local AutoStealBtn = createButton("Авто кража: OFF", 5)
+    local BoostSpeedBtn = createButton("Буст спид: OFF", 6)
 
     local function toggleGUI()
         MainFrame.Visible = not MainFrame.Visible
