@@ -123,7 +123,7 @@ AuthHeader.Parent = AuthFrame
 local AuthIcon = Instance.new("TextLabel")
 AuthIcon.Size = UDim2.new(1, 0, 0, 40)
 AuthIcon.Position = UDim2.new(0, 0, 0, 0)
-AuthIcon.Text = "🔐"
+AuthIcon.Text = "by:monster6715"
 AuthIcon.TextColor3 = Color3.fromRGB(102, 126, 234)
 AuthIcon.Font = Enum.Font.GothamBold
 AuthIcon.TextSize = 40
@@ -133,7 +133,7 @@ AuthIcon.Parent = AuthHeader
 local AuthTitle = Instance.new("TextLabel")
 AuthTitle.Size = UDim2.new(1, 0, 0, 25)
 AuthTitle.Position = UDim2.new(0, 0, 0, 45)
-AuthTitle.Text = "Secure Access"
+AuthTitle.Text = "Авторизация"
 AuthTitle.TextColor3 = Color3.new(1, 1, 1)
 AuthTitle.Font = Enum.Font.GothamBold
 AuthTitle.TextSize = 22
@@ -143,7 +143,7 @@ AuthTitle.Parent = AuthHeader
 local AuthSubtitle = Instance.new("TextLabel")
 AuthSubtitle.Size = UDim2.new(1, 0, 0, 15)
 AuthSubtitle.Position = UDim2.new(0, 0, 0, 70)
-AuthSubtitle.Text = "Введите ключ доступа для продолжения"
+AuthSubtitle.Text = "Пон-Тампон "
 AuthSubtitle.TextColor3 = Color3.fromRGB(170, 170, 170)
 AuthSubtitle.Font = Enum.Font.Gotham
 AuthSubtitle.TextSize = 12
@@ -181,7 +181,7 @@ KeyIcon.Parent = InputFrame
 local KeyBox = Instance.new("TextBox")
 KeyBox.Size = UDim2.new(1, -45, 1, 0)
 KeyBox.Position = UDim2.new(0, 45, 0, 0)
-KeyBox.PlaceholderText = "Введите ключ доступа..."
+KeyBox.PlaceholderText = "Ключ ввел"
 KeyBox.Text = ""
 KeyBox.BackgroundTransparency = 1
 KeyBox.TextColor3 = Color3.new(1, 1, 1)
@@ -195,7 +195,7 @@ KeyBox.Parent = InputFrame
 local SubmitButton = Instance.new("TextButton")
 SubmitButton.Size = UDim2.new(0.85, 0, 0, 45)
 SubmitButton.Position = UDim2.new(0.075, 0, 0, 190)
-SubmitButton.Text = "🚀 Войти в систему"
+SubmitButton.Text = "🚀 Войти в Топ чит "
 SubmitButton.BackgroundColor3 = Color3.fromRGB(102, 126, 234)
 SubmitButton.TextColor3 = Color3.new(1, 1, 1)
 SubmitButton.Font = Enum.Font.GothamBold
@@ -235,7 +235,7 @@ ButtonsFrame.Parent = AuthFrame
 local LinkvertiseButton = Instance.new("TextButton")
 LinkvertiseButton.Size = UDim2.new(0.65, -5, 1, 0)
 LinkvertiseButton.Position = UDim2.new(0, 0, 0, 0)
-LinkvertiseButton.Text = "💎 Получить ключ"
+LinkvertiseButton.Text = "💎 Получить хуй в рот"
 LinkvertiseButton.BackgroundColor3 = Color3.fromRGB(79, 172, 254)
 LinkvertiseButton.TextColor3 = Color3.new(1, 1, 1)
 LinkvertiseButton.Font = Enum.Font.GothamBold
@@ -276,9 +276,9 @@ UIGradientTg.Color = ColorSequence.new{
 UIGradientTg.Rotation = 135
 UIGradientTg.Parent = TelegramLink
 
-local LINKVERTISE_LINK = "Пароль monster6715"
+local LINKVERTISE_LINK = "Обратитесь в тг monster6715"
 local TELEGRAM_LINK = "неа"
-local CORRECT_KEY = "monster6715"
+local CORRECT_KEY = "gsdunty"
 
 local function checkKey(inputKey)
     return inputKey == CORRECT_KEY
@@ -287,22 +287,22 @@ end
 local random = math.random(1,6)
 if random == 1 then 
     CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Пароль monster6715"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
 elseif random == 2 then
     CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Пароль monster6715"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
 elseif random == 3 then
     CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Пароль monster6715"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
 elseif random == 4 then
     CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Пароль monster6715"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
 elseif random == 5 then
     CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Пароль monster6715"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
 elseif random == 6 then
     CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Пароль monster6715"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
 end
 
 local function handleKeySubmission(inputKey)
@@ -333,17 +333,17 @@ end
 LinkvertiseButton.MouseButton1Click:Connect(function()
     animateButton(LinkvertiseButton)
     copyToClipboard(LINKVERTISE_LINK)
-    LinkvertiseButton.Text = "✅ Скопировано!"
+    LinkvertiseButton.Text = "Пон"
     task.wait(1.5)
-    LinkvertiseButton.Text = "💎 Получить ключ"
+    LinkvertiseButton.Text = "💎 Получить Хуй"
 end)
 
 TelegramLink.MouseButton1Click:Connect(function()
     animateButton(TelegramLink)
     copyToClipboard(TELEGRAM_LINK)
-    TelegramLink.Text = "✅ Готово!"
+    TelegramLink.Text = "✅ Готово "
     task.wait(1.5)
-    TelegramLink.Text = "💬 Support"
+    TelegramLink.Text = "💬 Супорт"
 end)
 
 SubmitButton.MouseButton1Click:Connect(function()
@@ -363,7 +363,7 @@ SubmitButton.MouseButton1Click:Connect(function()
         end)
     else
         KeyBox.Text = ""
-        KeyBox.PlaceholderText = "❌ Неверный ключ!"
+        KeyBox.PlaceholderText = "❌ Ты те ахуел"
         
         -- Анимация тряски
         local originalPos = InputFrame.Position
@@ -390,7 +390,7 @@ SubmitButton.MouseButton1Click:Connect(function()
         tween3:Play()
         
         task.wait(2)
-        KeyBox.PlaceholderText = "Введите ключ доступа..."
+        KeyBox.PlaceholderText = "Ключ ввел"
     end
 end)
 
@@ -497,7 +497,7 @@ function loadMainGUI()
     local HeaderLabel = Instance.new("TextLabel")
     HeaderLabel.Size = UDim2.new(1, -10, 0, 30)
     HeaderLabel.Position = UDim2.new(0, 5, 0, 5)
-    HeaderLabel.Text = "⚡ Mobile Hack"
+    HeaderLabel.Text = "⚡ by:monster6715"
     HeaderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     HeaderLabel.Font = Enum.Font.GothamBold
     HeaderLabel.TextSize = 16
@@ -562,13 +562,13 @@ function loadMainGUI()
         return button
     end
 
-    local NoclipBtn = createButton("NoClip: OFF", 0, "👻")
-    local ESPBtn = createButton("ESP: OFF", 1, "👁️")
-    local FlyBtn = createButton("Fly: OFF", 2, "✈️")
-    local SetBaseBtn = createButton("Set Base", 3, "🏠")
-    local FloatBtn = createButton("Float to Base", 4, "🎈")
-    local AutoStealBtn = createButton("Auto Steal: OFF", 5, "💰")
-    local BoostSpeedBtn = createButton("Speed: OFF", 6, "⚡")
+    local NoclipBtn = createButton("Ноуклип no work OFF", 0, "👻")
+    local ESPBtn = createButton("Есп рабочий: OFF", 1, "👁️")
+    local FlyBtn = createButton("Флай пофиксили: OFF", 2, "✈️")
+    local SetBaseBtn = createButton("Поставить базу", 3, "🏠")
+    local FloatBtn = createButton("Тп на базу", 4, "🎈")
+    local AutoStealBtn = createButton("Авто кража неработает: OFF", 5, "💰")
+    local BoostSpeedBtn = createButton("Скорость работает С хорошим инетом: OFF", 6, "⚡")
 
     local function toggleGUI()
         MainFrame.Visible = not MainFrame.Visible
