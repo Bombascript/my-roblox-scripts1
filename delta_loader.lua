@@ -276,7 +276,7 @@ UIGradientTg.Color = ColorSequence.new{
 UIGradientTg.Rotation = 135
 UIGradientTg.Parent = TelegramLink
 
-local LINKVERTISE_LINK = "Обратитесь в тг monster6715"
+local LINKVERTISE_LINK = "Обратитесь в тг monster6715eeeeee"
 local TELEGRAM_LINK = "неа"
 local CORRECT_KEY = "gsdunty"
 
@@ -286,23 +286,23 @@ end
 
 local random = math.random(1,6)
 if random == 1 then 
-    CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
+    CORRECT_KEY = "qua567hfj"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715eeeee"
 elseif random == 2 then
-    CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
+    CORRECT_KEY = "h252hj"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715eeee"
 elseif random == 3 then
     CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715eeee"
 elseif random == 4 then
-    CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
+    CORRECT_KEY = "hdyj"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715eee"
 elseif random == 5 then
-    CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
+    CORRECT_KEY = "fjkdh"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715ee"
 elseif random == 6 then
-    CORRECT_KEY = "monster6715"
-    LINKVERTISE_LINK = "Обратитесь в тг monster6715"
+    CORRECT_KEY = "gfjhfjxn"
+    LINKVERTISE_LINK = "Обратитесь в тг monster6715e"
 end
 
 local function handleKeySubmission(inputKey)
@@ -421,7 +421,7 @@ function loadMainGUI()
     ToggleBtn.Position = UDim2.new(0, 15, 0.5, -27.5)
     ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
     ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ToggleBtn.Text = "🎮"
+    ToggleBtn.Text = "👾"
     ToggleBtn.Font = Enum.Font.GothamBlack
     ToggleBtn.TextSize = 24
     ToggleBtn.ZIndex = 2
@@ -473,7 +473,7 @@ function loadMainGUI()
 
     -- Основное меню - адаптированное под мобильные устройства
     local MainFrame = Instance.new("Frame")
-    MainFrame.Size = UDim2.new(0, 200, 0, 320)
+    MainFrame.Size = UDim2.new(0, 225, 0, 320)
     MainFrame.Position = UDim2.new(0, 80, 0.5, -160)
     MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
     MainFrame.BackgroundTransparency = 0.1
@@ -487,8 +487,8 @@ function loadMainGUI()
     -- Градиент для главного меню
     local UIGradientMain = Instance.new("UIGradient")
     UIGradientMain.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 45)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 25))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 60, 120)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 100, 200))
     }
     UIGradientMain.Rotation = 135
     UIGradientMain.Parent = MainFrame
